@@ -9,13 +9,8 @@ const port = 3000;
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static(__dirname)); // Phục vụ các file tĩnh (HTML, CSS, JS) trong thư mục hiện tại
-const apiKey = process.env.VIDTORY_API_KEY;
-if (!apiKey) {
-    console.warn("WARNING: VIDTORY_API_KEY environment variable is not defined!");
-}
-
 const ai = new VidtoryAI({
-    apiKey: apiKey || "dummy-key"
+    apiKey: process.env.VIDTORY_API_KEY
 });
 
 // API tạo ảnh
@@ -80,10 +75,6 @@ app.post('/api/generate/video', async (req, res) => {
     }
 });
 
-if (require.main === module) {
-    app.listen(port, () => {
-        console.log(`AI Studio Server đang chạy tại http://localhost:${port}`);
-    });
-}
-
-module.exports = app;
+app.listen(port, () => {
+    console.log(`AI Studio Server đang chạy tại http://localhost:${port}`);
+});
