@@ -507,7 +507,7 @@ export async function generateAction(isImg2Vid) {
             } else {
                 clearInterval(intervalId);
             }
-        }, 1800);
+        }, 10000);
         // Store interval/timeout or just let it clear if node is removed
     }, 4500);
     
