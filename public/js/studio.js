@@ -13,7 +13,8 @@ export const MODULES = [
     { id: 'comic', name: 'Xưởng Truyện Tranh', desc: 'Sáng tạo truyện tranh của riêng em', icon: SVG_ICONS.comic, refText: 'Tải lên nhân vật hoặc bối cảnh' },
     { id: 'character', name: 'Tạo Nhân Vật', desc: 'Tạo hình chú Mascot dễ thương của riêng em', icon: SVG_ICONS.character, refText: 'Tải lên mẫu nhân vật tham khảo' },
     { id: 'science', name: 'Xưởng Khoa Học Vui', desc: 'Minh họa hiện tượng và phát minh khoa học bằng AI', icon: SVG_ICONS.science, refText: 'Tải lên hình ảnh sơ đồ tham chiếu' },
-    { id: 'sketch', name: 'Vẽ tranh cùng AI', desc: 'Tô màu và hoàn thiện nét vẽ phác thảo của em bằng AI', icon: SVG_ICONS.sketch, refText: 'Tải lên bản vẽ phác thảo của em' }
+    { id: 'sketch', name: 'Vẽ tranh cùng AI', desc: 'Tô màu và hoàn thiện nét vẽ phác thảo của em bằng AI', icon: SVG_ICONS.sketch, refText: 'Tải lên bản vẽ phác thảo của em' },
+    { id: 'infographic', name: 'Sáng tạo Infographic', desc: 'Thiết kế sơ đồ thông tin trực quan sinh động bằng AI', icon: SVG_ICONS.infographic, refText: 'Tải lên sơ đồ hoặc bố cục tham khảo' }
 ];
 
 export const CHIP_POOL = {
@@ -95,6 +96,18 @@ export const CHIP_POOL = {
         { id: 'watercolor', label: 'Màu nước truyền thống nghệ thuật', vn: 'phong cách màu nước loang mềm mại đậm tính nghệ thuật (soft artistic watercolor painting style)' },
         { id: 'model_3d', label: 'Mô hình hoạt hình 3D sinh động', vn: 'phong cách hoạt hình 3D sinh động bóng bẩy (vibrant 3D cartoon render style)' },
         { id: 'realistic', label: 'Tranh sắc nét tả thực', vn: 'phong cách tả thực sắc nét chi tiết hoàn thiện (detailed realistic rendering style)' }
+    ],
+    infoLayout: [
+        { id: 'timeline', label: 'Dòng thời gian (Timeline)', vn: 'bố cục dòng thời gian (timeline structure)' },
+        { id: 'comparison', label: 'So sánh đối chiếu (Comparison)', vn: 'bố cục biểu đồ so sánh đối chiếu' },
+        { id: 'mindmap', label: 'Bản đồ tư duy (Mindmap)', vn: 'bố cục bản đồ tư duy (mindmap structure)' },
+        { id: 'hierarchical', label: 'Sơ đồ cây phân cấp (Hierarchy)', vn: 'bố cục sơ đồ cây phân cấp' }
+    ],
+    infoStyle: [
+        { id: 'flat_design', label: 'Phẳng hiện đại (Flat Design)', vn: 'phong cách thiết kế phẳng hiện đại (clean flat design infographic style)' },
+        { id: 'cartoon_doodle', label: 'Vẽ tay ngộ nghĩnh (Cartoon Doodle)', vn: 'phong cách vẽ tay hoạt hình doodle ngộ nghĩnh' },
+        { id: 'isometric_3d', label: 'Không gian 3D giả lập (Isometric 3D)', vn: 'phong cách 3D isometric trực quan sinh động' },
+        { id: 'minimalist', label: 'Tối giản thanh lịch (Minimalist)', vn: 'phong cách tối giản tinh tế thanh lịch' }
     ]
 };
 
@@ -155,6 +168,14 @@ export const MODULE_FIELDS = {
         { type: 'select', category: 'comicContext', title: '4. Ở đâu? Lúc nào?' },
         { type: 'select', category: 'generalAtmosphere', title: '5. Cảm giác thế nào?' },
         { type: 'select', category: 'textLanguage', title: '6. Có chữ tiếng gì?' }
+    ],
+    'infographic': [
+        { type: 'text', id: 'info-topic', title: '1. Tên chủ đề / Tên Infographic (Nếu muốn)', placeholder: 'Ví dụ: Lịch sử loài người, Sự phát triển của loài ong...' },
+        { type: 'text', id: 'info-details', title: '2. Nội dung / Thông tin muốn vẽ? (Bắt buộc)', placeholder: 'Ví dụ: các mốc thời gian phát triển, sơ đồ giải thích quy trình thụ phấn...' },
+        { type: 'select', category: 'infoLayout', title: '3. Bố cục thông tin như thế nào?' },
+        { type: 'select', category: 'infoStyle', title: '4. Vẽ theo kiểu phong cách nào?' },
+        { type: 'select', category: 'generalAtmosphere', title: '5. Cảm giác thế nào?' },
+        { type: 'select', category: 'textLanguage', title: '6. Có chữ tiếng gì?' }
     ]
 };
 
@@ -171,7 +192,9 @@ export const BLOCK_NAMES = {
     country: 'Quốc gia/Khu vực',
     age: 'Độ tuổi',
     generalAtmosphere: 'Cảm xúc',
-    textLanguage: 'Ngôn ngữ chữ viết'
+    textLanguage: 'Ngôn ngữ chữ viết',
+    infoLayout: 'Bố cục Infographic',
+    infoStyle: 'Phong cách Infographic'
 };
 
 export function updateMasterPrompt() {
@@ -236,11 +259,19 @@ export function updateMasterPrompt() {
         templateText = `Tranh vẽ hoàn thiện tô màu sinh động từ bản vẽ phác thảo mô tả về ${idea}, [sketchStyle], bối cảnh [comicContext], [generalAtmosphere], [textLanguage]`;
         templateHtml = `Tranh vẽ hoàn thiện tô màu sinh động từ bản vẽ phác thảo mô tả về <span class="prompt-token tag-subject">${idea}</span>, [sketchStyle], bối cảnh [comicContext], [generalAtmosphere], [textLanguage]`;
         formulaText = "🎨 Công thức: [Bản phác thảo] + [Ý tưởng] + [Phong cách] + [Bối cảnh]";
+    } else if (module === 'infographic') {
+        const topic = document.getElementById('info-topic')?.value.trim() || "chủ đề thông tin";
+        const details = document.getElementById('info-details')?.value.trim() || "";
+        let detailStr = details ? `, mô tả chi tiết nội dung ${details}` : "";
+        
+        templateText = `Thiết kế sơ đồ thông tin trực quan sinh động Infographic về '${topic}'${detailStr}, [infoLayout], [infoStyle], [generalAtmosphere], [textLanguage]`;
+        templateHtml = `Thiết kế sơ đồ thông tin trực quan sinh động Infographic về <span class="prompt-token tag-subject">'${topic}'</span><span class="prompt-token tag-action">${detailStr}</span>, [infoLayout], [infoStyle], [generalAtmosphere], [textLanguage]`;
+        formulaText = "📊 Công thức: [Tên Infographic] + [Nội dung chi tiết] + [Bố cục] + [Phong cách]";
     }
 
     const blocksList = [
         'comicPanels', 'comicStyle', 'comicContext', 'gameStyle', 'characterStyle', 'scienceStyle', 'scienceContext', 'sketchStyle',
-        'gender', 'country', 'age', 'generalAtmosphere', 'textLanguage'
+        'gender', 'country', 'age', 'generalAtmosphere', 'textLanguage', 'infoLayout', 'infoStyle'
     ];
     
     const BLOCK_TAGS = {
@@ -249,8 +280,10 @@ export function updateMasterPrompt() {
         characterStyle: 'tag-style',
         scienceStyle: 'tag-style',
         sketchStyle: 'tag-style',
+        infoStyle: 'tag-style',
         comicContext: 'tag-context',
         scienceContext: 'tag-context',
+        infoLayout: 'tag-context',
         generalAtmosphere: 'tag-vibe',
         comicPanels: 'tag-subject',
         gender: 'tag-subject',
@@ -958,7 +991,7 @@ export function renderPlayground() {
             `<div class="option-item" data-category="${category}" data-val="${c.id}"><span style="margin-right: 8px;">${getOptionIcon(c.id)}</span><span class="option-label">${c.label}</span></div>`
         ).join('');
         
-        const hasCustomInput = category !== 'comicPanels' && category !== 'gender' && category !== 'country' && category !== 'age' && category !== 'characterStyle' && category !== 'scienceStyle' && category !== 'scienceContext';
+        const hasCustomInput = category !== 'comicPanels' && category !== 'gender' && category !== 'country' && category !== 'age' && category !== 'characterStyle' && category !== 'scienceStyle' && category !== 'scienceContext' && category !== 'infoLayout' && category !== 'infoStyle';
         
         if (hasCustomInput) {
             optionsList += `<div class="option-item" data-category="${category}" data-val="custom"><span style="margin-right: 8px;">✏️</span><span class="option-label" style="font-weight: 600; color: var(--primary-color);">Ý tưởng tự viết...</span></div>`;

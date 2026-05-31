@@ -4,6 +4,7 @@ export const SVG_ICONS = {
     character: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"></circle><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path></svg>',
     science: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l-8 14h16l-8-14z"></path><circle cx="12" cy="12" r="2"></circle></svg>',
     info: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>',
+    infographic: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>',
     logout: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>',
     sketch: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>',
     video: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>',
@@ -25,7 +26,9 @@ export function getOptionIcon(id) {
         'dreamy': '✨', 'mysterious': '🔍', 'epic': '🌋', 'nostalgic': '⏳',
         'english': '🇬🇧', 'vietnamese': '🇻🇳', 'japanese': '🇯🇵', 'korean': '🇰🇷',
         '16:9': '📺', '9:16': '📱', '--ar 1:1': '⬜', '--ar 16:9': '📺', '--ar 9:16': '📱',
-        'anime': '🌸', 'colored_pencil': '🖍️', 'realistic': '📷'
+        'anime': '🌸', 'colored_pencil': '🖍️', 'realistic': '📷',
+        'timeline': '📈', 'comparison': '⚖️', 'mindmap': '🧠', 'hierarchical': '🌲',
+        'flat_design': '📐', 'cartoon_doodle': '🖍️', 'isometric_3d': '🧊', 'minimalist': '⚪'
     };
     return icons[id] || '🔹';
 }

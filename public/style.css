@@ -371,6 +371,10 @@ body.landing-mode .app-container {
 .nav-item[data-id="sketch"] .icon { background: rgba(255, 159, 28, 0.15); color: #cc7f16; }
 .nav-item[data-id="sketch"].active .icon { background: #FF9F1C; color: white; box-shadow: 0 4px 12px rgba(255,159,28,0.35); }
 
+.nav-item[data-id="infographic"] .icon { background: rgba(52, 211, 153, 0.15); color: #059669; }
+.nav-item[data-id="infographic"].active .icon { background: #34D399; color: white; box-shadow: 0 4px 12px rgba(52,211,153,0.35); }
+
+
 .nav-item[data-view="video"] .icon { background: rgba(17, 138, 178, 0.15); color: #0e6c8c; }
 .nav-item[data-view="video"].active .icon { background: #118AB2; color: white; box-shadow: 0 4px 12px rgba(17,138,178,0.35); }
 
