@@ -43,6 +43,9 @@ test.describe('Panasonic AI Studio - Mobile UI Flow', () => {
     await page.click('.custom-select[data-category="comicPanels"] .select-trigger');
     await page.click('.custom-select[data-category="comicPanels"] .option-item[data-val="2 panels"]');
 
+    // Move to generation phase
+    await page.click('#btn-go-to-generator');
+
     // Click Generate
     await page.click('#btn-generate');
 

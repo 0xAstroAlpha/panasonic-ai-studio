@@ -36,6 +36,9 @@ test.describe('Panasonic AI Studio - Functional Logic & Safety Filters', () => {
       await dialog.accept();
     });
 
+    // Move to generation phase
+    await page.click('#btn-go-to-generator');
+
     // Click generate button
     await page.click('#btn-generate');
 
@@ -52,6 +55,7 @@ test.describe('Panasonic AI Studio - Functional Logic & Safety Filters', () => {
       await dialog.accept();
     });
 
+    await page.click('#btn-go-to-generator');
     await page.click('#btn-generate');
     expect(alertMessage).toBe('Ý tưởng này chưa phù hợp, thử mô tả khác nhé!');
   });

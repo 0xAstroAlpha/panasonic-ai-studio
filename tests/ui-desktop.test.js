@@ -74,6 +74,11 @@ test.describe('Panasonic AI Studio - Desktop UI Flow', () => {
     await page.click('.custom-select[data-category="gameStyle"] .select-trigger');
     await page.click('.custom-select[data-category="gameStyle"] .option-item[data-val="cel_shaded"]');
 
+    // Go to generator phase, go back to edit, then go to generator again
+    await page.click('#btn-go-to-generator');
+    await page.click('#btn-back-to-builder');
+    await page.click('#btn-go-to-generator');
+
     // Trigger generate
     await page.click('#btn-generate');
 

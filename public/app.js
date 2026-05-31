@@ -9,7 +9,8 @@ const appState = {
     view: 'studio', // 'studio', 'gallery', 'video'
     chatRefImages: [], // Tối đa 2 ảnh dán vào khung chat
     gallerySelectMode: false,
-    gallerySelectedIndices: []
+    gallerySelectedIndices: [],
+    promptStep: 'builder' // 'builder' or 'generator'
 };
 
 const CREDENTIALS = {
@@ -271,7 +272,8 @@ window.updateMasterPrompt = function() {
     const finalPrompt = document.getElementById('final-prompt');
     if (!finalPrompt) return;
 
-    let template = "";
+    let templateText = "";
+    let templateHtml = "";
     const module = appState.currentModule;
 
     if (module === 'comic') {
@@ -284,7 +286,8 @@ window.updateMasterPrompt = function() {
         else if (charName) charStr = `nhân vật ${charName}`;
         else charStr = "một nhân vật";
         
-        template = `Tranh truyện tranh vẽ ${charStr} ${action}, [comicPanels], [comicStyle], bối cảnh [comicContext], [generalAtmosphere], [textLanguage]`;
+        templateText = `Tranh truyện tranh vẽ ${charStr} ${action}, [comicPanels], [comicStyle], bối cảnh [comicContext], [generalAtmosphere], [textLanguage]`;
+        templateHtml = `Tranh truyện tranh vẽ <span class="prompt-token tag-subject">${charStr}</span> <span class="prompt-token tag-action">${action}</span>, [comicPanels], [comicStyle], bối cảnh [comicContext], [generalAtmosphere], [textLanguage]`;
 
     } else if (module === 'fashion') {
         const outfit = document.getElementById('fashion-outfit')?.value.trim() || "trang phục thời trang";
@@ -293,7 +296,8 @@ window.updateMasterPrompt = function() {
         if (modelDesc) subjectStr = `người mẫu ${modelDesc} mặc ${outfit}`;
         else subjectStr = `trang phục ${outfit}`;
         
-        template = `Ảnh chụp thời trang [gender] [country] [age] ${subjectStr}, [fashionStyle], chụp tại [fashionContext], [generalAtmosphere], [textLanguage]`;
+        templateText = `Ảnh chụp thời trang [gender] [country] [age] ${subjectStr}, [fashionStyle], chụp tại [fashionContext], [generalAtmosphere], [textLanguage]`;
+        templateHtml = `Ảnh chụp thời trang [gender] [country] [age] <span class="prompt-token tag-subject">${subjectStr}</span>, [fashionStyle], chụp tại [fashionContext], [generalAtmosphere], [textLanguage]`;
 
     } else if (module === 'film') {
         const title = document.getElementById('film-title')?.value.trim() || "";
@@ -312,7 +316,8 @@ window.updateMasterPrompt = function() {
         else if (scene) contentStr = `mô tả bối cảnh ${scene}`;
         else contentStr = "một phân cảnh kịch tính";
         
-        template = `${subjectStr} ${contentStr}, [filmGenre], [filmStyle], [generalAtmosphere], [textLanguage]`;
+        templateText = `${subjectStr} ${contentStr}, [filmGenre], [filmStyle], [generalAtmosphere], [textLanguage]`;
+        templateHtml = `<span class="prompt-token tag-subject">${subjectStr}</span> <span class="prompt-token tag-action">${contentStr}</span>, [filmGenre], [filmStyle], [generalAtmosphere], [textLanguage]`;
 
     } else if (module === 'game') {
         const name = document.getElementById('game-char-name')?.value.trim() || "";
@@ -321,7 +326,8 @@ window.updateMasterPrompt = function() {
         if (name) subjectStr = `nhân vật game tên '${name}' (${desc})`;
         else subjectStr = `nhân vật game ${desc}`;
         
-        template = `Bản vẽ concept art game của ${subjectStr} [gender] [country] [age], [gameStyle], môi trường [comicContext], [generalAtmosphere], [textLanguage]`;
+        templateText = `Bản vẽ concept art game của ${subjectStr} [gender] [country] [age], [gameStyle], môi trường [comicContext], [generalAtmosphere], [textLanguage]`;
+        templateHtml = `Bản vẽ concept art game của <span class="prompt-token tag-subject">${subjectStr}</span> [gender] [country] [age], [gameStyle], môi trường [comicContext], [generalAtmosphere], [textLanguage]`;
 
     } else if (module === 'book') {
         const title = document.getElementById('book-title')?.value.trim() || "";
@@ -331,7 +337,8 @@ window.updateMasterPrompt = function() {
         if (desc) subjectStr = `Bìa sách minh họa ${desc}, tên sách là '${title}' của tác giả '${author}'`;
         else subjectStr = `Bìa sách minh họa nghệ thuật, tên sách là '${title}' của tác giả '${author}'`;
         
-        template = `${subjectStr}, [bookGenre], [bookColor], [generalAtmosphere], [textLanguage]`;
+        templateText = `${subjectStr}, [bookGenre], [bookColor], [generalAtmosphere], [textLanguage]`;
+        templateHtml = `<span class="prompt-token tag-subject">${subjectStr}</span>, [bookGenre], [bookColor], [generalAtmosphere], [textLanguage]`;
 
     } else if (module === 'social') {
         const name = document.getElementById('social-prod-name')?.value.trim() || "sản phẩm";
@@ -346,7 +353,8 @@ window.updateMasterPrompt = function() {
             brandStr = `, kèm theo chữ viết hiển thị tên thương hiệu hoặc thông điệp '${brandText}'`;
         }
         
-        template = `Ảnh chụp quảng cáo sản phẩm chuyên nghiệp về ${subjectStr}${brandStr} dùng cho bài đăng marketing, [generalAtmosphere], [textLanguage]`;
+        templateText = `Ảnh chụp quảng cáo sản phẩm chuyên nghiệp về ${subjectStr}${brandStr} dùng cho bài đăng marketing, [generalAtmosphere], [textLanguage]`;
+        templateHtml = `Ảnh chụp quảng cáo sản phẩm chuyên nghiệp về <span class="prompt-token tag-subject">${subjectStr}</span>${brandStr} dùng cho bài đăng marketing, [generalAtmosphere], [textLanguage]`;
 
     } else if (module === 'interior') {
         const room = document.getElementById('interior-room')?.value.trim() || "căn phòng";
@@ -354,9 +362,11 @@ window.updateMasterPrompt = function() {
         let subjectStr = room;
         if (details) subjectStr += ` ${details}`;
         
-        template = `Thiết kế nội thất của ${subjectStr}, [interiorStyle], [generalAtmosphere], [textLanguage]`;
+        templateText = `Thiết kế nội thất của ${subjectStr}, [interiorStyle], [generalAtmosphere], [textLanguage]`;
+        templateHtml = `Thiết kế nội thất của <span class="prompt-token tag-subject">${subjectStr}</span>, [interiorStyle], [generalAtmosphere], [textLanguage]`;
     } else {
-        template = `Hình ảnh vẽ về một bối cảnh, [comicStyle], [generalAtmosphere], [textLanguage]`;
+        templateText = `Hình ảnh vẽ về một bối cảnh, [comicStyle], [generalAtmosphere], [textLanguage]`;
+        templateHtml = `Hình ảnh vẽ về một bối cảnh, [comicStyle], [generalAtmosphere], [textLanguage]`;
     }
 
     const blocksList = [
@@ -364,6 +374,24 @@ window.updateMasterPrompt = function() {
         'filmGenre', 'filmStyle', 'gameStyle', 'bookGenre', 'bookColor', 
         'gender', 'country', 'age', 'interiorStyle', 'generalAtmosphere', 'textLanguage'
     ];
+    
+    const BLOCK_TAGS = {
+        comicStyle: 'tag-style',
+        fashionStyle: 'tag-style',
+        filmStyle: 'tag-style',
+        gameStyle: 'tag-style',
+        interiorStyle: 'tag-style',
+        comicContext: 'tag-context',
+        fashionContext: 'tag-context',
+        generalAtmosphere: 'tag-vibe',
+        comicPanels: 'tag-subject',
+        gender: 'tag-subject',
+        country: 'tag-subject',
+        age: 'tag-subject',
+        bookGenre: 'tag-style',
+        bookColor: 'tag-vibe'
+    };
+
     blocksList.forEach(block => {
         const val = currentBlocks[block];
         if (val && val !== 'none') {
@@ -373,18 +401,26 @@ window.updateMasterPrompt = function() {
             if (block === 'textLanguage' && !selectedChip) {
                 vnVal = `chữ viết hiển thị bằng ${val.toLowerCase()} (text in ${val.toLowerCase()})`;
             }
-            template = template.replace(`[${block}]`, vnVal);
+            templateText = templateText.replace(`[${block}]`, vnVal);
+            
+            const tagClass = BLOCK_TAGS[block];
+            const htmlVal = tagClass ? `<span class="prompt-token ${tagClass}">${vnVal}</span>` : vnVal;
+            templateHtml = templateHtml.replace(`[${block}]`, htmlVal);
         } else {
-            template = template.replace(`[${block}]`, '');
+            templateText = templateText.replace(`[${block}]`, '');
+            templateHtml = templateHtml.replace(`[${block}]`, '');
         }
     });
 
-    template = template.replace(/,(\s*,)+/g, ',').replace(/\s+/g, ' ').replace(/ ,/g, ',').trim().replace(/,\s*$/, '');
-    finalPrompt.value = template;
+    templateText = templateText.replace(/,(\s*,)+/g, ',').replace(/\s+/g, ' ').replace(/ ,/g, ',').trim().replace(/,\s*$/, '');
+    templateHtml = templateHtml.replace(/,(\s*,)+/g, ',').replace(/\s+/g, ' ').replace(/ ,/g, ',').trim().replace(/,\s*$/, '');
     
-    // Auto-adjust prompt height
-    finalPrompt.style.height = 'auto';
-    finalPrompt.style.height = Math.min(finalPrompt.scrollHeight, 120) + 'px';
+    finalPrompt.value = templateText;
+    
+    const livePreview = document.getElementById('live-prompt-preview');
+    if (livePreview) {
+        livePreview.innerHTML = templateHtml || `<span style="color:var(--text-muted)">Bắt đầu nhập liệu để thấy câu lệnh hình thành...</span>`;
+    }
 };
 
 const BLOCK_NAMES = {
@@ -840,6 +876,7 @@ function renderMainLayout() {
             if (el.hasAttribute('data-id')) {
                 appState.currentModule = el.getAttribute('data-id');
                 appState.view = 'studio';
+                appState.promptStep = 'builder';
                 renderPlayground();
             } else if (el.hasAttribute('data-view')) {
                 appState.view = el.getAttribute('data-view');
@@ -854,13 +891,93 @@ function renderMainLayout() {
     else renderGalleryView();
 }
 
+function validateStudioInputs() {
+    const module = appState.currentModule;
+    if (module === 'comic') {
+        const actionVal = $('comic-action')?.value.trim();
+        if (!actionVal) {
+            alert('Vui lòng nhập mục "3. Hành động / Cốt truyện (Bắt buộc)"!');
+            $('comic-action')?.focus();
+            return false;
+        }
+    } else if (module === 'fashion') {
+        const outfitVal = $('fashion-outfit')?.value.trim();
+        if (!outfitVal) {
+            alert('Vui lòng nhập mục "1. Thiết kế / Trang phục (Bắt buộc)"!');
+            $('fashion-outfit')?.focus();
+            return false;
+        }
+    } else if (module === 'film') {
+        const charVal = $('film-char-desc')?.value.trim();
+        const sceneVal = $('film-scene')?.value.trim();
+        if (!charVal) {
+            alert('Vui lòng nhập mục "3. Mô tả chi tiết nhân vật (Bắt buộc)"!');
+            $('film-char-desc')?.focus();
+            return false;
+        }
+        if (!sceneVal) {
+            alert('Vui lòng nhập mục "4. Bối cảnh / Phân cảnh (Bắt buộc)"!');
+            $('film-scene')?.focus();
+            return false;
+        }
+    } else if (module === 'game') {
+        const descVal = $('game-desc')?.value.trim();
+        if (!descVal) {
+            alert('Vui lòng nhập mục "2. Mô tả ngoại hình / Vũ khí (Bắt buộc)"!');
+            $('game-desc')?.focus();
+            return false;
+        }
+    } else if (module === 'book') {
+        const titleVal = $('book-title')?.value.trim();
+        const authorVal = $('book-author')?.value.trim();
+        if (!titleVal) {
+            alert('Vui lòng nhập mục "1. Tên sách (Bắt buộc)"!');
+            $('book-title')?.focus();
+            return false;
+        }
+        if (!authorVal) {
+            alert('Vui lòng nhập mục "2. Tên tác giả (Bắt buộc)"!');
+            $('book-author')?.focus();
+            return false;
+        }
+    }
+    return true;
+}
+
+function switchStudioPhase(step) {
+    appState.promptStep = step;
+    const colBuilderForm = $('col-builder-form');
+    const colPromptBoard = $('col-prompt-board');
+    const colGeneratorPanel = $('col-generator-panel');
+    const colOutputDisplay = $('col-output-display');
+    
+    if (step === 'builder') {
+        if (colBuilderForm) colBuilderForm.style.display = 'flex';
+        if (colPromptBoard) colPromptBoard.style.display = 'block';
+        if (colGeneratorPanel) colGeneratorPanel.style.display = 'none';
+        if (colOutputDisplay) colOutputDisplay.style.display = 'none';
+    } else {
+        if (step === 'generator') {
+            const hasValid = validateStudioInputs();
+            if (!hasValid) {
+                appState.promptStep = 'builder';
+                return;
+            }
+        }
+        if (colBuilderForm) colBuilderForm.style.display = 'none';
+        if (colPromptBoard) colPromptBoard.style.display = 'none';
+        if (colGeneratorPanel) colGeneratorPanel.style.display = 'flex';
+        if (colOutputDisplay) colOutputDisplay.style.display = 'flex';
+        
+        const finalPromptReview = $('final-prompt-review');
+        if (finalPromptReview) {
+            finalPromptReview.innerHTML = $('final-prompt')?.value || '';
+        }
+    }
+}
+
 function renderPlayground() {
     const mod = MODULES.find(m => m.id === appState.currentModule) || MODULES[0];
-    
-    currentBlocks = {};
-    uploadedRefImage = null;
-    appState.chatRefImages = [];
-    currentAspectRatio = '--ar 1:1';
 
     let dropdownsHtml = '';
     const fields = MODULE_FIELDS[appState.currentModule] || MODULE_FIELDS['comic'];
@@ -909,7 +1026,46 @@ function renderPlayground() {
             <p>${mod.desc}</p>
         </div>
         <div class="playground-content">
-            <div class="glass-panel builder-area">
+            <!-- Cột 1: Builder Form (Phase 1 Left) -->
+            <div class="glass-panel builder-area" id="col-builder-form">
+                ${dropdownsHtml}
+            </div>
+
+            <!-- Cột 2: Prompt Board (Phase 1 Right) -->
+            <div class="output-area" id="col-prompt-board" style="flex: 1; overflow-y: auto;">
+                <div class="prompt-board-card">
+                    <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                        📝 Bảng Câu Lệnh Thời Gian Thực
+                    </h2>
+                    <div class="live-prompt-box" id="live-prompt-preview">
+                        <span style="color:var(--text-muted)">Bắt đầu nhập liệu để thấy câu lệnh hình thành...</span>
+                    </div>
+                    <button id="btn-go-to-generator" class="btn-lime" style="width: 100%; justify-content: center; margin-top: 12px;">
+                        Tiếp theo: Đi tới phòng Tạo Ảnh ➔
+                    </button>
+                </div>
+                
+                <div class="edu-tips-box">
+                    <h3>💡 Mẹo viết Prompt hiệu quả</h3>
+                    <p style="margin-bottom: 12px;">Một câu lệnh AI chuẩn thường gồm 5 thành phần cốt lõi được sắp xếp khoa học:</p>
+                    <div class="edu-tip-item"><span class="edu-bullet subject"></span> <span><strong>Chủ thể (Subject):</strong> Tên nhân vật, trang phục, ngoại hình.</span></div>
+                    <div class="edu-tip-item"><span class="edu-bullet action"></span> <span><strong>Hành động (Action):</strong> Tư thế, biểu cảm, cử chỉ.</span></div>
+                    <div class="edu-tip-item"><span class="edu-bullet style"></span> <span><strong>Phong cách (Style):</strong> Thể loại tranh, phim ảnh, nét vẽ.</span></div>
+                    <div class="edu-tip-item"><span class="edu-bullet context"></span> <span><strong>Bối cảnh (Context):</strong> Địa điểm, thời gian, thời tiết.</span></div>
+                    <div class="edu-tip-item"><span class="edu-bullet vibe"></span> <span><strong>Cảm xúc (Vibe):</strong> Không khí, ánh sáng, góc chụp.</span></div>
+                </div>
+            </div>
+
+            <!-- Cột 3: Generator Panel (Phase 2 Left) -->
+            <div class="glass-panel builder-area" id="col-generator-panel" style="display: none; flex: 1; max-width: 440px;">
+                <div class="block-group">
+                    <div class="block-title">Câu lệnh của bạn</div>
+                    <div class="prompt-review-card" id="final-prompt-review"></div>
+                    <button id="btn-back-to-builder" class="btn-modern-tech" style="width: 100%; justify-content: center; margin-bottom: 16px;">
+                        ⬅ Quay lại Chỉnh sửa Câu lệnh
+                    </button>
+                </div>
+
                 <div class="block-group">
                     <div class="block-title">Ảnh tham khảo (Tùy chọn)</div>
                     <div class="upload-zone" id="ref-upload-zone">
@@ -926,35 +1082,32 @@ function renderPlayground() {
                     </div>
                 </div>
 
-                ${dropdownsHtml}
-            </div>
-
-            <div class="output-area">
-                <div class="result-display" id="result-display"></div>
-
-                <div class="glass-panel prompt-dock">
-                    <div class="prompt-dock-top" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                        <p style="font-size: 0.85rem; color: var(--primary-color); margin: 0; font-weight: 500;">Mẹo: Ctrl+V để dán ảnh tham khảo trực tiếp vào ô bên dưới.</p>
-                        <div class="custom-select" id="aspect-ratio-select" style="width: 160px;">
-                            <div class="select-trigger" style="padding: 6px 12px; font-size: 0.85rem; height: 32px;">
-                                <span class="trigger-text">1:1 (Vuông)</span>
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                            </div>
-                            <div class="select-options">
-                                <div class="option-item selected" data-val="--ar 1:1"><span class="option-label">1:1 (Vuông)</span></div>
-                                <div class="option-item" data-val="--ar 16:9"><span class="option-label">16:9 (Ngang)</span></div>
-                                <div class="option-item" data-val="--ar 9:16"><span class="option-label">9:16 (Dọc)</span></div>
-                            </div>
+                <div class="block-group" style="margin-top: 16px;">
+                    <div class="block-title">Khung hình</div>
+                    <div class="custom-select" id="aspect-ratio-select">
+                        <div class="select-trigger">
+                            <span class="trigger-text">1:1 (Vuông)</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </div>
+                        <div class="select-options">
+                            <div class="option-item selected" data-val="--ar 1:1"><span class="option-label">1:1 (Vuông)</span></div>
+                            <div class="option-item" data-val="--ar 16:9"><span class="option-label">16:9 (Ngang)</span></div>
+                            <div class="option-item" data-val="--ar 9:16"><span class="option-label">9:16 (Dọc)</span></div>
                         </div>
                     </div>
-                    <div class="prompt-dock-input">
-                        <textarea id="final-prompt" placeholder="Nhập lệnh để bắt đầu sáng tạo..." style="flex:1; height: 48px; background: rgba(255,255,255,0.7); border: 1px solid var(--panel-border); padding: 12px 16px; border-radius: 12px; font-size: 0.95rem; resize: none; font-family: inherit; color: var(--text-main); outline: none; transition: border 0.3s;"></textarea>
-                        <button id="btn-generate" class="btn-primary" style="padding: 0 24px; flex-shrink: 0; font-size: 1rem; height: 48px; border-radius: 12px;">✨ Generate</button>
-                    </div>
-
-                    <div class="pinned-refs" id="pinned-refs-container"></div>
                 </div>
+
+                <button id="btn-generate" class="btn-primary" style="width: 100%; margin-top: 24px;">✨ Sinh ảnh AI</button>
             </div>
+
+            <!-- Cột 4: Output Display (Phase 2 Right) -->
+            <div class="output-area" id="col-output-display" style="display: none;">
+                <div class="result-display" id="result-display"></div>
+            </div>
+            
+            <!-- Hidden containers for code compat -->
+            <textarea id="final-prompt" style="display: none;"></textarea>
+            <div class="pinned-refs" id="pinned-refs-container" style="display: none;"></div>
         </div>
     `;
 
@@ -962,6 +1115,12 @@ function renderPlayground() {
     setupReferenceUpload();
     setupChatPaste();
     window.renderResultGrid();
+    
+    // Bind phase switch buttons
+    $('btn-go-to-generator')?.addEventListener('click', () => switchStudioPhase('generator'));
+    $('btn-back-to-builder')?.addEventListener('click', () => switchStudioPhase('builder'));
+    
+    switchStudioPhase(appState.promptStep);
 }
 
 window.renderResultGrid = () => {
