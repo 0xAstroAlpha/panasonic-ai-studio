@@ -33,18 +33,15 @@ test.describe('Panasonic AI Studio - Mobile UI Flow', () => {
     await expect(onboardModal).not.toBeVisible();
 
     // 5. Verify Sidebar structure / main layout in mobile width
-    // In mobile, we check that elements are interactable and not covered
-    await expect(page.locator('#playground-area h1')).toContainText('Comic Studio');
+    await expect(page.locator('#playground-area h1')).toContainText('Xưởng Truyện Tranh');
     
     // Fill required actions in prompt builder
+    await page.fill('#comic-char-desc', 'chú mèo máy đeo kính tròn');
     await page.fill('#comic-action', 'mèo máy đáng yêu nhảy múa');
 
     // Select standard panels
     await page.click('.custom-select[data-category="comicPanels"] .select-trigger');
     await page.click('.custom-select[data-category="comicPanels"] .option-item[data-val="2 panels"]');
-
-    // Move to generation phase
-    await page.click('#btn-go-to-generator');
 
     // Click Generate
     await page.click('#btn-generate');

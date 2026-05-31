@@ -14,8 +14,8 @@ app.use(express.static(path.join(__dirname, 'public'))); // Phục vụ các fil
 // API tạo ảnh (Mock)
 app.post('/api/generate/image', async (req, res) => {
     try {
-        const { prompt, aspectRatio } = req.body;
-        console.log(`[Mock Server] Generate Image Request. Prompt: "${prompt}", AspectRatio: "${aspectRatio}"`);
+        const { prompt, aspectRatio, refImageBase64, refImageUrl } = req.body;
+        console.log(`[Mock Server] Generate Image Request. Prompt: "${prompt}", AspectRatio: "${aspectRatio}", HasSketch: ${!!refImageBase64 || !!refImageUrl}`);
         
         // Return a local image served statically from public/images
         res.json({ url: '/images/floating_ai_comic.png' });

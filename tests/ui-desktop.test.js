@@ -16,7 +16,6 @@ test.describe('Panasonic AI Studio - Desktop UI Flow', () => {
     await expect(page.locator('h2', { hasText: 'Đăng nhập' })).toBeVisible();
     
     // Try login without username (should trigger alert or prevent progress - simple client checks)
-    // Wait, the client code checks for empty input and alerts 'Vui lòng nhập tên đăng nhập'
     let alertMessage = '';
     page.once('dialog', async dialog => {
       alertMessage = dialog.message();
@@ -55,29 +54,22 @@ test.describe('Panasonic AI Studio - Desktop UI Flow', () => {
     await expect(onboardModal).not.toBeVisible();
 
     // 5. Main Studio layout and switching modules
-    // Default studio is Comic Studio
-    await expect(page.locator('#playground-area h1')).toContainText('Comic Studio');
+    // Default studio is Xưởng Truyện Tranh
+    await expect(page.locator('#playground-area h1')).toContainText('Xưởng Truyện Tranh');
     
-    // Switch to Fashion Studio via sidebar
-    await page.click('.nav-item[data-id="fashion"]');
-    await expect(page.locator('#playground-area h1')).toContainText('Fashion Studio');
-    await expect(page.locator('.block-title', { hasText: 'Thiết kế / Trang phục (Bắt buộc)' })).toBeVisible();
+    // Switch to Tạo Nhân Vật Studio via sidebar (replaces fashion)
+    await page.click('.nav-item[data-id="character"]');
+    await expect(page.locator('#playground-area h1')).toContainText('Tạo Nhân Vật');
+    await expect(page.locator('.block-title', { hasText: '2. Con vật hoặc hình dáng gì? (Bắt buộc)' })).toBeVisible();
 
-    // Switch to Game Studio
-    await page.click('.nav-item[data-id="game"]');
-    await expect(page.locator('#playground-area h1')).toContainText('Game Studio');
-
-    // 6. Generate action in Studio
-    await page.fill('#game-desc', 'một kỵ sĩ rồng uy phong lẫm liệt');
+    // 6. Generate action in Studio (Tạo Nhân Vật)
+    await page.fill('#char-shape', 'chú gấu trúc tròn xoe béo ú');
+    await page.fill('#char-outfit', 'đội mũ bảo hiểm phi hành gia');
+    await page.fill('#char-action', 'đang ngồi gặm kẹo mút');
     
-    // Select dynamic option (cel-shaded)
-    await page.click('.custom-select[data-category="gameStyle"] .select-trigger');
-    await page.click('.custom-select[data-category="gameStyle"] .option-item[data-val="cel_shaded"]');
-
-    // Go to generator phase, go back to edit, then go to generator again
-    await page.click('#btn-go-to-generator');
-    await page.click('#btn-back-to-builder');
-    await page.click('#btn-go-to-generator');
+    // Select style option
+    await page.click('.custom-select[data-category="characterStyle"] .select-trigger');
+    await page.click('.custom-select[data-category="characterStyle"] .option-item[data-val="mascot_cute"]');
 
     // Trigger generate
     await page.click('#btn-generate');
@@ -107,7 +99,7 @@ test.describe('Panasonic AI Studio - Desktop UI Flow', () => {
 
     // Navigate to Gallery via sidebar
     await page.click('.nav-item[data-view="gallery"]');
-    await expect(page.locator('#playground-area h1')).toContainText('Thư viện cá nhân của bạn');
+    await expect(page.locator('#playground-area h1')).toContainText('Thư viện cá nhân của em');
 
     // Verify mock image is listed in gallery grid
     const galleryGridItem = page.locator('.gallery-item img');

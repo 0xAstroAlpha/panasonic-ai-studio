@@ -17,10 +17,25 @@ const ai = new VidtoryAI({
 // API tạo ảnh
 app.post('/api/generate/image', async (req, res) => {
     try {
-        const { prompt, aspectRatio } = req.body;
+        const { prompt, aspectRatio, refImageBase64, refImageUrl: directUrl } = req.body;
         
-        // Vidtory API sử dụng aspectRatio format chuẩn (mặc định nếu không cung cấp)
+        let refImageUrl = directUrl || null;
+        if (refImageBase64) {
+            const base64Data = refImageBase64.replace(/^data:image\/\w+;base64,/, "");
+            const buffer = Buffer.from(base64Data, 'base64');
+            const media = await ai.media.upload({
+                file: buffer,
+                fileName: 'sketch-image.jpg',
+                metadata: { category: 'sketch' },
+            });
+            refImageUrl = media.url;
+        }
+
         const params = { prompt };
+        if (refImageUrl) {
+            params.refImageUrl = refImageUrl;
+        }
+        
         if (aspectRatio) {
             if (aspectRatio === '--ar 16:9') params.aspectRatio = 'IMAGE_ASPECT_RATIO_LANDSCAPE';
             else if (aspectRatio === '--ar 9:16') params.aspectRatio = 'IMAGE_ASPECT_RATIO_PORTRAIT';
@@ -76,6 +91,10 @@ app.post('/api/generate/video', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`AI Studio Server đang chạy tại http://localhost:${port}`);
-});
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`AI Studio Server đang chạy tại http://localhost:${port}`);
+    });
+}
+
+module.exports = app;

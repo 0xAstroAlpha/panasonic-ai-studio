@@ -27,6 +27,7 @@ test.describe('Panasonic AI Studio - Functional Logic & Safety Filters', () => {
 
   test('Keyword safety filter blocks blacklisted words (Vietnamese & English)', async ({ page }) => {
     // Fill the mandatory subject/action in Comic Studio (default studio)
+    await page.fill('#comic-char-desc', 'chú mèo máy dễ thương');
     await page.fill('#comic-action', 'đang bay lượn trên bầu trời có máu');
 
     // Intercept alert dialog
@@ -36,17 +37,15 @@ test.describe('Panasonic AI Studio - Functional Logic & Safety Filters', () => {
       await dialog.accept();
     });
 
-    // Move to generation phase
-    await page.click('#btn-go-to-generator');
-
     // Click generate button
     await page.click('#btn-generate');
 
     // Assert safety filter message
-    expect(alertMessage).toBe('Ý tưởng này chưa phù hợp, thử mô tả khác nhé!');
+    expect(alertMessage).toContain('Ý tưởng này chưa phù hợp với lớp học của chúng mình rồi');
   });
 
   test('Keyword safety filter blocks profanity and violent English words', async ({ page }) => {
+    await page.fill('#comic-char-desc', 'a cute mascot');
     await page.fill('#comic-action', 'holding a gun and shoot target');
 
     let alertMessage = '';
@@ -55,10 +54,24 @@ test.describe('Panasonic AI Studio - Functional Logic & Safety Filters', () => {
       await dialog.accept();
     });
 
-    await page.click('#btn-go-to-generator');
     await page.click('#btn-generate');
-    expect(alertMessage).toBe('Ý tưởng này chưa phù hợp, thử mô tả khác nhé!');
+    expect(alertMessage).toContain('Ý tưởng này chưa phù hợp với lớp học của chúng mình rồi');
   });
+
+  test('Personal info safety filter blocks keywords like school or phone', async ({ page }) => {
+    await page.fill('#comic-char-desc', 'chú mèo máy dễ thương');
+    await page.fill('#comic-action', 'học ở trường tiểu học của tớ');
+
+    let alertMessage = '';
+    page.on('dialog', async dialog => {
+      alertMessage = dialog.message();
+      await dialog.accept();
+    });
+
+    await page.click('#btn-generate');
+    expect(alertMessage).toBe('Hãy giữ an toàn bằng cách không nhập tên thật, trường học hoặc địa chỉ của mình vào câu lệnh nhé! 🔒');
+  });
+
 
   test('Prompt Builder correctly updates and aggregates prompt blocks realtime', async ({ page }) => {
     // Clear/fill specific fields
@@ -93,6 +106,82 @@ test.describe('Panasonic AI Studio - Functional Logic & Safety Filters', () => {
     expect(sessionData.username).toBe('hocsinh1');
     expect(sessionData.nickname).toBe('TesterBot');
     expect(sessionData.avatar).toContain('dicebear');
+  });
+
+  test('Sidebar contains kids studios and hides commercial modules', async ({ page }) => {
+    const sidebarText = await page.textContent('#main-sidebar');
+    
+    // Should contain kids modules
+    expect(sidebarText).toContain('Xưởng Truyện Tranh');
+    expect(sidebarText).toContain('Tạo Nhân Vật');
+    expect(sidebarText).toContain('Xưởng Khoa Học Vui');
+    expect(sidebarText).toContain('Vẽ tranh cùng AI');
+    expect(sidebarText).toContain('Làm Phim Ngắn');
+    expect(sidebarText).toContain('Thư viện');
+    
+    // Should NOT contain commercial studios
+    expect(sidebarText).not.toContain('Fashion Studio');
+    expect(sidebarText).not.toContain('Interior Studio');
+    expect(sidebarText).not.toContain('Film Poster');
+  });
+
+  test('Sketch-to-Image (Vẽ tranh cùng AI) correctly validates, uploads sketch and generates image', async ({ page }) => {
+    // Navigate to Vẽ tranh cùng AI
+    await page.click('.sidebar .nav-item:has-text("Vẽ tranh cùng AI")');
+    
+    // Check dynamic formula text is shown
+    const formulaBadge = page.locator('#prompt-formula-badge');
+    await expect(formulaBadge).toContainText('Công thức: [Bản phác thảo] + [Ý tưởng] + [Phong cách] + [Bối cảnh]');
+
+    // Try generating without uploading a sketch (should alert)
+    let alertMessage = '';
+    page.on('dialog', async dialog => {
+      alertMessage = dialog.message();
+      await dialog.accept();
+    });
+
+    await page.click('#btn-generate');
+    expect(alertMessage).toContain('Vui lòng tải lên bức phác thảo của em');
+
+    // Reset dialog handler for next assertions
+    page.removeAllListeners('dialog');
+
+    // Input sketch details and style
+    await page.fill('#sketch-desc', 'chú mèo máy Doraemon đang cười vui vẻ');
+    
+    // Select a style (Anime)
+    await page.click('.custom-select[data-category="sketchStyle"] .select-trigger');
+    await page.click('.custom-select[data-category="sketchStyle"] .option-item[data-val="anime"]');
+
+    // Simulate uploading a file using the file chooser/input
+    const fileChooserPromise = page.waitForEvent('filechooser');
+    // Clicking the zone triggers the file input click
+    await page.click('#sketch-upload-zone');
+    const fileChooser = await fileChooserPromise;
+
+    // Create a mock buffer of an image to upload
+    const buffer = Buffer.from('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
+    
+    // Handle dialog accept for safety confirm check
+    page.on('dialog', async dialog => {
+      await dialog.accept(); // Confirms safety photo check
+    });
+
+    await fileChooser.setFiles({
+      name: 'sketch.png',
+      mimeType: 'image/png',
+      buffer: buffer
+    });
+
+    // Check preview container is visible
+    await expect(page.locator('#sketch-preview-container')).toBeVisible();
+
+    // Trigger generate
+    await page.click('#btn-generate');
+
+    // Results card and generated mock image should display
+    const generatedImage = page.locator('.result-item img');
+    await expect(generatedImage).toBeVisible({ timeout: 5000 });
   });
 
 });
