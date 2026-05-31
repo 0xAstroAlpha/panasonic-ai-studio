@@ -13,6 +13,7 @@ import { SVG_ICONS } from './js/icons.js';
 import { MODULES, renderPlayground } from './js/studio.js';
 import { renderVideoStudio, handleImg2VidPaste } from './js/video.js';
 import { renderGalleryView } from './js/gallery.js';
+import { renderTeacherView } from './js/teacher.js';
 
 const $ = id => document.getElementById(id);
 const appContainer = $('app-container');
@@ -380,6 +381,12 @@ function renderMainLayout() {
                     <div class="nav-item ${appState.view === 'gallery' ? 'active' : ''}" data-view="gallery">
                         <span class="icon">${SVG_ICONS.gallery}</span><span class="nav-item-text">Thư viện</span>
                     </div>
+                    ${role === 'teacher' ? `
+                    <div class="sidebar-category-header" style="margin-top: 8px;">Giáo viên</div>
+                    <div class="nav-item ${appState.view === 'teacher' ? 'active' : ''}" data-view="teacher">
+                        <span class="icon">${SVG_ICONS.teacher}</span><span class="nav-item-text">Quản lý Lớp học</span>
+                    </div>
+                    ` : ''}
                 </nav>
                 <div style="margin-top: auto; padding: 16px;">
                     <button class="nav-item" onclick="window.handleLogout()" style="width: 100%; border: none; background: rgba(239, 68, 68, 0.1); color: #ef4444; justify-content: flex-start; cursor: pointer;">
@@ -456,13 +463,15 @@ function renderMainLayout() {
                 appState.comparisonBase = null;
                 if (appState.view === 'video') renderVideoStudio();
                 else if (appState.view === 'gallery') renderGalleryView();
+                else if (appState.view === 'teacher') renderTeacherView();
             }
         });
     });
 
     if (appState.view === 'studio') renderPlayground();
     else if (appState.view === 'video') renderVideoStudio();
-    else renderGalleryView();
+    else if (appState.view === 'gallery') renderGalleryView();
+    else if (appState.view === 'teacher') renderTeacherView();
 }
 
 window.handleLogout = handleLogout;

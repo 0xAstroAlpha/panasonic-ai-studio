@@ -1,5 +1,6 @@
 import { VidtoryAI } from '@vidtory/ai-sdk';
 import { NextResponse } from 'next/server';
+import { logGeneration } from '../../../../lib/history';
 
 const ai = new VidtoryAI({
     apiKey: process.env.VIDTORY_API_KEY
@@ -8,7 +9,7 @@ const ai = new VidtoryAI({
 export async function POST(request) {
     try {
         const body = await request.json();
-        const { prompt, aspectRatio, refImageBase64, refImageUrl: directUrl } = body;
+        const { prompt, aspectRatio, refImageBase64, refImageUrl: directUrl, username, nickname, studio } = body;
         
         let refImageUrl = directUrl || null;
         if (refImageBase64) {
@@ -35,6 +36,21 @@ export async function POST(request) {
         }
 
         const response = await ai.models.generateVideo(params);
+        
+        try {
+            logGeneration({
+                username,
+                nickname,
+                studio,
+                prompt,
+                type: 'video',
+                resultUrl: response.result,
+                refImageUrl
+            });
+        } catch (logErr) {
+            console.error('Failed to log video generation:', logErr);
+        }
+
         return NextResponse.json({ url: response.result });
     } catch (error) {
         console.error('Error generating video:', error);

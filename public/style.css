@@ -381,6 +381,9 @@ body.landing-mode .app-container {
 .nav-item[data-view="gallery"] .icon { background: rgba(183, 233, 49, 0.2); color: #6d900f; }
 .nav-item[data-view="gallery"].active .icon { background: #8cb814; color: white; box-shadow: 0 4px 12px rgba(139,184,20,0.35); }
 
+.nav-item[data-view="teacher"] .icon { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.nav-item[data-view="teacher"].active .icon { background: #ef4444; color: white; box-shadow: 0 4px 12px rgba(239,68,68,0.35); }
+
 .sidebar-category-header {
     padding: 8px 12px;
     font-size: 0.8rem;

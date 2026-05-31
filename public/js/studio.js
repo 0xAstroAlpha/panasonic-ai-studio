@@ -555,7 +555,10 @@ export async function generateAction(isImg2Vid) {
         if (isImg2Vid) {
             const bodyPayload = {
                 prompt: promptText,
-                aspectRatio: document.querySelector('.custom-select[data-category="vidRatio"] .option-item.selected')?.getAttribute('data-val') || '16:9'
+                aspectRatio: document.querySelector('.custom-select[data-category="vidRatio"] .option-item.selected')?.getAttribute('data-val') || '16:9',
+                username: appState.username,
+                nickname: appState.nickname,
+                studio: 'Làm Phim Ngắn'
             };
             if (window.uploadedRefImage && window.uploadedRefImage.startsWith('data:image')) {
                 bodyPayload.refImageBase64 = window.uploadedRefImage;
@@ -593,7 +596,10 @@ export async function generateAction(isImg2Vid) {
             
             const bodyPayload = {
                 prompt: finalStr,
-                aspectRatio: window.currentAspectRatio
+                aspectRatio: window.currentAspectRatio,
+                username: appState.username,
+                nickname: appState.nickname,
+                studio: MODULES.find(m => m.id === appState.currentModule)?.name || appState.currentModule
             };
             if (window.uploadedRefImage && window.uploadedRefImage.startsWith('data:image')) {
                 bodyPayload.refImageBase64 = window.uploadedRefImage;
@@ -680,6 +686,34 @@ export function setupChatPaste() {
     });
 }
 
+export function convertToJpeg(dataUrl, callback) {
+    if (!dataUrl || !dataUrl.startsWith('data:image') || dataUrl.startsWith('data:image/jpeg')) {
+        callback(dataUrl);
+        return;
+    }
+    const img = new Image();
+    img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+        try {
+            const jpegDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+            callback(jpegDataUrl);
+        } catch (e) {
+            console.error('Error converting to JPEG:', e);
+            callback(dataUrl);
+        }
+    };
+    img.onerror = () => {
+        callback(dataUrl);
+    };
+    img.src = dataUrl;
+}
+
 export function setupReferenceUpload() {
     const zone = document.getElementById('ref-upload-zone');
     const fileInput = document.getElementById('ref-file');
@@ -734,10 +768,12 @@ export function setupReferenceUpload() {
 
         const reader = new FileReader();
         reader.onload = (ev) => {
-            window.uploadedRefImage = ev.target.result;
-            previewImg.src = window.uploadedRefImage;
-            zone.style.display = 'none';
-            previewContainer.style.display = 'block';
+            convertToJpeg(ev.target.result, (jpegDataUrl) => {
+                window.uploadedRefImage = jpegDataUrl;
+                previewImg.src = window.uploadedRefImage;
+                zone.style.display = 'none';
+                previewContainer.style.display = 'block';
+            });
         };
         reader.readAsDataURL(file);
     }
@@ -798,17 +834,19 @@ export function setupSketchUpload() {
 
         const reader = new FileReader();
         reader.onload = (event) => {
-            window.uploadedRefImage = event.target.result;
-            previewImg.src = event.target.result;
-            previewContainer.style.display = 'block';
-            uploadText.style.display = 'none';
-            
-            const uploadIcon = zone.querySelector('.sketch-upload-icon');
-            const uploadSub = zone.querySelector('.sketch-upload-sub');
-            if (uploadIcon) uploadIcon.style.display = 'none';
-            if (uploadSub) uploadSub.style.display = 'none';
-            
-            updateMasterPrompt();
+            convertToJpeg(event.target.result, (jpegDataUrl) => {
+                window.uploadedRefImage = jpegDataUrl;
+                previewImg.src = jpegDataUrl;
+                previewContainer.style.display = 'block';
+                uploadText.style.display = 'none';
+                
+                const uploadIcon = zone.querySelector('.sketch-upload-icon');
+                const uploadSub = zone.querySelector('.sketch-upload-sub');
+                if (uploadIcon) uploadIcon.style.display = 'none';
+                if (uploadSub) uploadSub.style.display = 'none';
+                
+                updateMasterPrompt();
+            });
         };
         reader.readAsDataURL(file);
     }

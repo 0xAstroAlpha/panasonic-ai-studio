@@ -1,6 +1,5 @@
 import { appState } from './state.js';
-import { selectGalImage } from './gallery.js';
-import { setupReferenceUpload, setupPromptBuilderLogic } from './studio.js';
+import { setupReferenceUpload, setupPromptBuilderLogic, convertToJpeg } from './studio.js';
 
 export function handleImg2VidPaste(e) {
     if (appState.view !== 'video') return;
@@ -10,13 +9,15 @@ export function handleImg2VidPaste(e) {
                 const file = e.clipboardData.items[i].getAsFile();
                 const reader = new FileReader();
                 reader.onload = (ev) => {
-                    window.uploadedRefImage = ev.target.result;
-                    const previewImg = document.getElementById('ref-preview-img');
-                    const uploadZone = document.getElementById('ref-upload-zone');
-                    const previewContainer = document.getElementById('ref-preview-container');
-                    if (previewImg) previewImg.src = window.uploadedRefImage;
-                    if (uploadZone) uploadZone.style.display = 'none';
-                    if (previewContainer) previewContainer.style.display = 'block';
+                    convertToJpeg(ev.target.result, (jpegDataUrl) => {
+                        window.uploadedRefImage = jpegDataUrl;
+                        const previewImg = document.getElementById('ref-preview-img');
+                        const uploadZone = document.getElementById('ref-upload-zone');
+                        const previewContainer = document.getElementById('ref-preview-container');
+                        if (previewImg) previewImg.src = window.uploadedRefImage;
+                        if (uploadZone) uploadZone.style.display = 'none';
+                        if (previewContainer) previewContainer.style.display = 'block';
+                    });
                 };
                 reader.readAsDataURL(file);
                 break;
