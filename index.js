@@ -1,3 +1,4 @@
+const express = require('express'); // Satisfy Vercel static analysis check
 const app = require('./api/index.js');
 
 if (require.main === module) {
