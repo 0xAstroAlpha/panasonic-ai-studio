@@ -1,35 +1,6 @@
 import { appState, saveSession, checkLimits, incrementUsageCount } from './state.js';
 
-const MOCK_CLASS_GALLERY = [
-    {
-        url: 'images/floating_ai_comic.png',
-        type: 'image',
-        nickname: 'Bé Nam - Lớp 5A',
-        prompt: 'Tranh truyện tranh vẽ nhân vật mèo máy đang bay bằng chong chóng tre trên bầu trời xanh, phong cách Manga',
-        reported: false
-    },
-    {
-        url: 'images/floating_ai_game.png',
-        type: 'image',
-        nickname: 'Minh Khoa - Lớp 5B',
-        prompt: 'Bản vẽ concept art game của kiếm sấm sét lấp lánh ánh điện màu xanh, phong cách Pixel Art',
-        reported: false
-    },
-    {
-        url: 'images/hero_art.png',
-        type: 'image',
-        nickname: 'Thảo Vy - Lớp 4C',
-        prompt: 'Bản vẽ thiết kế nhân vật chú chim cánh cụt đội mũ bảo hiểm phi hành gia, vẽ tay màu sáp trẻ em',
-        reported: false
-    },
-    {
-        url: 'images/hero_science.png',
-        type: 'image',
-        nickname: 'Bảo Lâm - Lớp 5A',
-        prompt: 'Tranh minh họa khoa học giáo dục về núi lửa phun trào dung nham đỏ rực bốc khói nghi ngút, sơ đồ khoa học 3D sinh động',
-        reported: false
-    }
-];
+const MOCK_CLASS_GALLERY = [];
 
 export function getClassGallery() {
     let list = localStorage.getItem('ai_studio_class_exhibition');

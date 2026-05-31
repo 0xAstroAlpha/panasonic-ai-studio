@@ -78,9 +78,9 @@ test.describe('Panasonic AI Studio - Desktop UI Flow', () => {
     const loadingText = page.locator('#result-display span', { hasText: 'AI đang sáng tạo...' });
     await expect(loadingText).toBeVisible();
 
-    // Wait for the mock image to display in grid
+    // Wait for the generated image to display in grid
     const generatedImage = page.locator('.result-item img');
-    await expect(generatedImage).toBeVisible({ timeout: 5000 });
+    await expect(generatedImage).toBeVisible({ timeout: 90000 });
 
     // 7. Lightbox Popup
     // Click result item to show lightbox

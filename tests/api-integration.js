@@ -4,9 +4,10 @@ const path = require('path');
 async function runIntegrationTest() {
     console.log('Starting real API integration test with Vidtory API key...');
     
-    // Start server.js
-    const serverProcess = spawn('node', [path.join(__dirname, '..', 'server.js')], {
-        env: { ...process.env }
+    // Start Next.js server
+    const serverProcess = spawn('npx', ['next', 'dev', '-p', '3000'], {
+        env: { ...process.env },
+        shell: true
     });
 
     let serverStarted = false;
@@ -16,13 +17,13 @@ async function runIntegrationTest() {
         console.error('Test timed out waiting for server to respond.');
         serverProcess.kill();
         process.exit(1);
-    }, 45000);
+    }, 60000);
 
     serverProcess.stdout.on('data', async (data) => {
         const output = data.toString();
         console.log(`[Server stdout]: ${output.trim()}`);
         
-        if (output.includes('AI Studio Server đang chạy') && !serverStarted) {
+        if (output.toLowerCase().includes('ready') && !serverStarted) {
             serverStarted = true;
             try {
                 await performTestRequest();

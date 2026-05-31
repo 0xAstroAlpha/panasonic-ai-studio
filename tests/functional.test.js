@@ -179,9 +179,9 @@ test.describe('Panasonic AI Studio - Functional Logic & Safety Filters', () => {
     // Trigger generate
     await page.click('#btn-generate');
 
-    // Results card and generated mock image should display
+    // Results card and generated image should display
     const generatedImage = page.locator('.result-item img');
-    await expect(generatedImage).toBeVisible({ timeout: 5000 });
+    await expect(generatedImage).toBeVisible({ timeout: 90000 });
   });
 
 });

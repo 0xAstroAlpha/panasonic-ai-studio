@@ -2,6 +2,7 @@ const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: './tests',
+  timeout: 120000,
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -33,9 +34,9 @@ module.exports = defineConfig({
     },
   ],
   webServer: {
-    command: 'node server-mock.js',
+    command: 'npm run dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
-    timeout: 10000,
+    timeout: 30000,
   },
 });

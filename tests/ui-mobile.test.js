@@ -49,9 +49,9 @@ test.describe('Panasonic AI Studio - Mobile UI Flow', () => {
     // Loader text should appear and then image load
     await expect(page.locator('#result-display span', { hasText: 'AI đang sáng tạo...' })).toBeVisible();
     
-    // Verify generated mock image is visible
+    // Verify generated image is visible
     const generatedImage = page.locator('.result-item img');
-    await expect(generatedImage).toBeVisible({ timeout: 5000 });
+    await expect(generatedImage).toBeVisible({ timeout: 90000 });
 
     // Open lightbox and verify mobile behavior
     await page.click('.result-item');

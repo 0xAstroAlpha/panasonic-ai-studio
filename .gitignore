@@ -12,3 +12,8 @@ playwright/.cache/
 
 # OS metadata
 .DS_Store
+
+# Next.js build directory
+.next/
+next-env.d.ts
+
