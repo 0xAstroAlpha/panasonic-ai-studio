@@ -242,8 +242,12 @@ function renderHistoryItems(items) {
         });
 
         // Determine badge style
-        const badgeColor = item.type === 'video' ? '#118ab2' : '#0067d9';
-        const badgeText = item.type === 'video' ? '🎬 Phim ngắn' : '📷 Ảnh';
+        let badgeColor = item.type === 'video' ? '#118ab2' : '#0067d9';
+        let badgeText = item.type === 'video' ? '🎬 Phim ngắn' : '📷 Ảnh';
+        if (item.isRefOnly) {
+            badgeColor = '#FF9F1C';
+            badgeText = '📁 Tham chiếu';
+        }
 
         // Check reference image
         const refImgHtml = item.refImageUrl ? `
