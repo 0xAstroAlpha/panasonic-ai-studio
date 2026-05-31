@@ -124,8 +124,8 @@ for (const key in CHIP_POOL) {
 export const MODULE_FIELDS = {
     'comic': [
         { type: 'text', id: 'comic-char-name', title: '1. Tên nhân vật (Nếu muốn)', placeholder: 'Ví dụ: Dế Mèn, Thỏ Ngọc...' },
-        { type: 'text', id: 'comic-char-desc', title: '2. Vẽ cái gì? Ai là nhân vật? (Bắt buộc)', placeholder: 'Ví dụ: một chú mèo máy mập mạp màu xanh da trời...' },
-        { type: 'text', id: 'comic-action', title: '3. Đang làm gì? (Bắt buộc)', placeholder: 'Ví dụ: đang bay bằng chong chóng tre trên bầu trời...' },
+        { type: 'text', id: 'comic-char-desc', title: '2. Vẽ cái gì? Ai là nhân vật?', required: true, placeholder: 'Ví dụ: một chú mèo máy mập mạp màu xanh da trời...' },
+        { type: 'text', id: 'comic-action', title: '3. Đang làm gì?', required: true, placeholder: 'Ví dụ: đang bay bằng chong chóng tre trên bầu trời...' },
         { type: 'select', category: 'comicPanels', title: '4. Chia làm mấy ô hình?' },
         { type: 'select', category: 'comicStyle', title: '5. Vẽ theo kiểu nào?' },
         { type: 'select', category: 'comicContext', title: '6. Ở đâu? Lúc nào?' },
@@ -134,7 +134,7 @@ export const MODULE_FIELDS = {
     ],
     'game': [
         { type: 'text', id: 'game-char-name', title: '1. Tên nhân vật / Vật phẩm (Nếu muốn)', placeholder: 'Ví dụ: Kiếm Sấm Sét, Khiên Ánh Sáng...' },
-        { type: 'text', id: 'game-desc', title: '2. Vẽ cái gì? Chi tiết trang bị? (Bắt buộc)', placeholder: 'Ví dụ: kiếm rực lửa với chuôi bằng sừng rồng...' },
+        { type: 'text', id: 'game-desc', title: '2. Vẽ cái gì? Chi tiết trang bị?', required: true, placeholder: 'Ví dụ: kiếm rực lửa với chuôi bằng sừng rồng...' },
         { type: 'select', category: 'gameStyle', title: '3. Vẽ theo kiểu nào?' },
         { type: 'select', category: 'comicContext', title: '4. Ở đâu? Lúc nào?' },
         { type: 'select', category: 'gender', title: '5. Giới tính nhân vật?' },
@@ -145,33 +145,33 @@ export const MODULE_FIELDS = {
     ],
     'character': [
         { type: 'text', id: 'char-name', title: '1. Tên nhân vật (Nếu muốn)', placeholder: 'Ví dụ: Gấu Bông, Rồng Con...' },
-        { type: 'text', id: 'char-shape', title: '2. Con vật hoặc hình dáng gì? (Bắt buộc)', placeholder: 'Ví dụ: chú gấu trúc tròn xoe béo ú...' },
-        { type: 'text', id: 'char-outfit', title: '3. Trang phục & phụ kiện? (Bắt buộc)', placeholder: 'Ví dụ: đội mũ bảo hiểm phi hành gia, đeo balo đỏ...' },
-        { type: 'text', id: 'char-action', title: '4. Đang làm gì? (Bắt buộc)', placeholder: 'Ví dụ: đang ngồi gặm kẹo mút cười tít mắt...' },
+        { type: 'text', id: 'char-shape', title: '2. Con vật hoặc hình dáng gì?', required: true, placeholder: 'Ví dụ: chú gấu trúc tròn xoe béo ú...' },
+        { type: 'text', id: 'char-outfit', title: '3. Trang phục & phụ kiện?', required: true, placeholder: 'Ví dụ: đội mũ bảo hiểm phi hành gia, đeo balo đỏ...' },
+        { type: 'text', id: 'char-action', title: '4. Đang làm gì?', required: true, placeholder: 'Ví dụ: đang ngồi gặm kẹo mút cười tít mắt...' },
         { type: 'select', category: 'characterStyle', title: '5. Vẽ theo kiểu nào?' },
         { type: 'select', category: 'comicContext', title: '6. Ở đâu? Lúc nào?' },
         { type: 'select', category: 'generalAtmosphere', title: '7. Cảm giác thế nào?' },
         { type: 'select', category: 'textLanguage', title: '8. Có chữ tiếng gì?' }
     ],
     'science': [
-        { type: 'text', id: 'science-topic', title: '1. Tên hiện tượng / Phát minh khoa học (Bắt buộc)', placeholder: 'Ví dụ: vòng tuần hoàn của nước, xe ô tô năng lượng mặt trời...' },
-        { type: 'text', id: 'science-details', title: '2. Chi tiết vẽ? (Bắt buộc)', placeholder: 'Ví dụ: mặt trời chiếu nắng làm nước bốc hơi thành mây, kèm mũi tên quy trình...' },
+        { type: 'text', id: 'science-topic', title: '1. Tên hiện tượng / Phát minh khoa học', required: true, placeholder: 'Ví dụ: vòng tuần hoàn của nước, xe ô tô năng lượng mặt trời...' },
+        { type: 'text', id: 'science-details', title: '2. Chi tiết vẽ?', required: true, placeholder: 'Ví dụ: mặt trời chiếu nắng làm nước bốc hơi thành mây, kèm mũi tên quy trình...' },
         { type: 'select', category: 'scienceStyle', title: '3. Vẽ theo kiểu nào?' },
         { type: 'select', category: 'scienceContext', title: '4. Ở đâu? Lúc nào?' },
         { type: 'select', category: 'generalAtmosphere', title: '5. Cảm giác thế nào?' },
         { type: 'select', category: 'textLanguage', title: '6. Có chữ tiếng gì?' }
     ],
     'sketch': [
-        { type: 'file', id: 'sketch-upload', title: '1. Bản phác thảo của em (Bắt buộc)', placeholder: 'Chụp ảnh nét vẽ trên giấy của em rồi tải lên đây nhé!' },
-        { type: 'text', id: 'sketch-desc', title: '2. Bức tranh vẽ gì? Ý tưởng? (Bắt buộc)', placeholder: 'Ví dụ: chú thỏ con ôm củ cà rốt, phi thuyền bay giữa vũ trụ...' },
-        { type: 'select', category: 'sketchStyle', title: '3. Vẽ theo kiểu nào? (Bắt buộc)' },
+        { type: 'file', id: 'sketch-upload', title: '1. Bản phác thảo của em', required: true, placeholder: 'Chụp ảnh nét vẽ trên giấy của em rồi tải lên đây nhé!' },
+        { type: 'text', id: 'sketch-desc', title: '2. Bức tranh vẽ gì? Ý tưởng?', required: true, placeholder: 'Ví dụ: chú thỏ con ôm củ cà rốt, phi thuyền bay giữa vũ trụ...' },
+        { type: 'select', category: 'sketchStyle', title: '3. Vẽ theo kiểu nào?', required: true },
         { type: 'select', category: 'comicContext', title: '4. Ở đâu? Lúc nào?' },
         { type: 'select', category: 'generalAtmosphere', title: '5. Cảm giác thế nào?' },
         { type: 'select', category: 'textLanguage', title: '6. Có chữ tiếng gì?' }
     ],
     'infographic': [
         { type: 'text', id: 'info-topic', title: '1. Tên chủ đề / Tên Infographic (Nếu muốn)', placeholder: 'Ví dụ: Lịch sử loài người, Sự phát triển của loài ong...' },
-        { type: 'text', id: 'info-details', title: '2. Nội dung / Thông tin muốn vẽ? (Bắt buộc)', placeholder: 'Ví dụ: các mốc thời gian phát triển, sơ đồ giải thích quy trình thụ phấn...' },
+        { type: 'text', id: 'info-details', title: '2. Nội dung / Thông tin muốn vẽ?', required: true, placeholder: 'Ví dụ: các mốc thời gian phát triển, sơ đồ giải thích quy trình thụ phấn...' },
         { type: 'select', category: 'infoLayout', title: '3. Bố cục thông tin như thế nào?' },
         { type: 'select', category: 'infoStyle', title: '4. Vẽ theo kiểu phong cách nào?' },
         { type: 'select', category: 'generalAtmosphere', title: '5. Cảm giác thế nào?' },
@@ -375,19 +375,19 @@ export function validateStudioInputs() {
         const descVal = document.getElementById('comic-char-desc')?.value.trim();
         const actionVal = document.getElementById('comic-action')?.value.trim();
         if (!descVal) {
-            alert('Vui lòng nhập mục "2. Vẽ cái gì? Ai là nhân vật? (Bắt buộc)"!');
+            alert('Vui lòng nhập mục "2. Vẽ cái gì? Ai là nhân vật?"!');
             document.getElementById('comic-char-desc')?.focus();
             return false;
         }
         if (!actionVal) {
-            alert('Vui lòng nhập mục "3. Đang làm gì? (Bắt buộc)"!');
+            alert('Vui lòng nhập mục "3. Đang làm gì?"!');
             document.getElementById('comic-action')?.focus();
             return false;
         }
     } else if (module === 'game') {
         const descVal = document.getElementById('game-desc')?.value.trim();
         if (!descVal) {
-            alert('Vui lòng nhập mục "2. Vẽ cái gì? Chi tiết trang bị? (Bắt buộc)"!');
+            alert('Vui lòng nhập mục "2. Vẽ cái gì? Chi tiết trang bị?"!');
             document.getElementById('game-desc')?.focus();
             return false;
         }
@@ -396,17 +396,17 @@ export function validateStudioInputs() {
         const outfitVal = document.getElementById('char-outfit')?.value.trim();
         const actionVal = document.getElementById('char-action')?.value.trim();
         if (!shapeVal) {
-            alert('Vui lòng nhập mục "2. Con vật hoặc hình dáng gì? (Bắt buộc)"!');
+            alert('Vui lòng nhập mục "2. Con vật hoặc hình dáng gì?"!');
             document.getElementById('char-shape')?.focus();
             return false;
         }
         if (!outfitVal) {
-            alert('Vui lòng nhập mục "3. Trang phục & phụ kiện? (Bắt buộc)"!');
+            alert('Vui lòng nhập mục "3. Trang phục & phụ kiện?"!');
             document.getElementById('char-outfit')?.focus();
             return false;
         }
         if (!actionVal) {
-            alert('Vui lòng nhập mục "4. Đang làm gì? (Bắt buộc)"!');
+            alert('Vui lòng nhập mục "4. Đang làm gì?"!');
             document.getElementById('char-action')?.focus();
             return false;
         }
@@ -414,12 +414,12 @@ export function validateStudioInputs() {
         const topicVal = document.getElementById('science-topic')?.value.trim();
         const detailsVal = document.getElementById('science-details')?.value.trim();
         if (!topicVal) {
-            alert('Vui lòng nhập mục "1. Tên hiện tượng / Phát minh khoa học (Bắt buộc)"!');
+            alert('Vui lòng nhập mục "1. Tên hiện tượng / Phát minh khoa học"!');
             document.getElementById('science-topic')?.focus();
             return false;
         }
         if (!detailsVal) {
-            alert('Vui lòng nhập mục "2. Chi tiết vẽ? (Bắt buộc)"!');
+            alert('Vui lòng nhập mục "2. Chi tiết vẽ?"!');
             document.getElementById('science-details')?.focus();
             return false;
         }
@@ -430,13 +430,20 @@ export function validateStudioInputs() {
         }
         const descVal = document.getElementById('sketch-desc')?.value.trim();
         if (!descVal) {
-            alert('Vui lòng nhập mục "2. Bức tranh vẽ gì? Ý tưởng? (Bắt buộc)"!');
+            alert('Vui lòng nhập mục "2. Bức tranh vẽ gì? Ý tưởng?"!');
             document.getElementById('sketch-desc')?.focus();
             return false;
         }
         const styleVal = window.currentBlocks['sketchStyle'];
         if (!styleVal || styleVal === 'none') {
-            alert('Vui lòng chọn mục "3. Vẽ theo kiểu nào? (Bắt buộc)"!');
+            alert('Vui lòng chọn mục "3. Vẽ theo kiểu nào?"!');
+            return false;
+        }
+    } else if (module === 'infographic') {
+        const detailsVal = document.getElementById('info-details')?.value.trim();
+        if (!detailsVal) {
+            alert('Vui lòng nhập mục "2. Nội dung / Thông tin muốn vẽ?"!');
+            document.getElementById('info-details')?.focus();
             return false;
         }
     }
@@ -953,10 +960,11 @@ export function renderPlayground() {
 
     let mainFieldsHtml = '';
     mainFields.forEach(field => {
+        const requiredStar = field.required ? ' <span style="color: #ef4444; font-weight: bold;">*</span>' : '';
         if (field.type === 'file') {
             mainFieldsHtml += `
                 <div class="block-group" style="margin-bottom: 12px;">
-                    <div class="block-title" style="font-size:0.82rem; font-weight:700; color:var(--text-main); margin-bottom:6px;">${field.title}</div>
+                    <div class="block-title" style="font-size:0.82rem; font-weight:700; color:var(--text-main); margin-bottom:6px;">${field.title}${requiredStar}</div>
                     <div class="sketch-upload-area" id="sketch-upload-zone" style="border: 2px dashed rgba(0, 103, 217, 0.3); background: rgba(0, 103, 217, 0.03); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative;">
                         <input type="file" id="${field.id}" accept="image/*" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;">
                         <div class="sketch-upload-icon" style="font-size: 1.5rem; margin-bottom: 4px;">📝</div>
@@ -974,7 +982,7 @@ export function renderPlayground() {
         } else if (field.type === 'text') {
             mainFieldsHtml += `
                 <div class="block-group" style="margin-bottom: 12px;">
-                    <div class="block-title" style="font-size:0.82rem; font-weight:700; color:var(--text-main); margin-bottom:6px;">${field.title}</div>
+                    <div class="block-title" style="font-size:0.82rem; font-weight:700; color:var(--text-main); margin-bottom:6px;">${field.title}${requiredStar}</div>
                     <input type="text" id="${field.id}" class="input-field block-text-input" placeholder="${field.placeholder}" style="width: 100%; font-size: 0.85rem; padding: 10px;">
                 </div>
             `;
@@ -1005,11 +1013,12 @@ export function renderPlayground() {
             `<div class="option-item" data-category="${category}" data-val="${c.id}"><span style="margin-right: 8px;">${getOptionIcon(c.id)}</span><span class="option-label">${c.label}</span></div>`
         ).join('');
 
+        const requiredStar = field.required ? ' <span style="color: #ef4444; font-weight: bold;">*</span>' : '';
         const customInputHtml = hasCustomInput ? `<input type="text" class="input-field block-custom-input" data-category="${category}" style="margin-top:8px; font-size: 0.85rem; padding: 10px; display: none;" placeholder="Nhập ${field.title.split('. ')[1].toLowerCase()}...">` : '';
 
         selectFieldsHtml += `
             <div class="block-group" style="margin-bottom: 12px;">
-                <div class="block-title" style="font-size:0.82rem; font-weight:700; color:var(--text-main); margin-bottom:6px;">${field.title}</div>
+                <div class="block-title" style="font-size:0.82rem; font-weight:700; color:var(--text-main); margin-bottom:6px;">${field.title}${requiredStar}</div>
                 <div class="custom-select" data-category="${category}">
                     <div class="select-trigger" style="padding: 10px 12px; font-size: 0.85rem;">
                         <span class="trigger-text">-- Chọn ${field.title.split('. ')[1]} --</span>
