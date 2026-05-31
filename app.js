@@ -33,7 +33,7 @@ const MODULES = [
     { id: 'film', name: 'Film Poster', desc: 'Làm poster phim', icon: SVG_ICONS.film, refText: 'Tải lên cảnh phác thảo' },
     { id: 'game', name: 'Game Studio', desc: 'Thiết kế nhân vật', icon: SVG_ICONS.game, refText: 'Tải lên concept art' },
     { id: 'book', name: 'Book Cover', desc: 'Làm bìa sách', icon: SVG_ICONS.book, refText: 'Tải lên bản vẽ minh họa' },
-    { id: 'social', name: 'Social Post', desc: 'Làm ảnh Marketing', icon: SVG_ICONS.social, refText: 'Mô tả chủ thể hoặc tải lên ảnh sản phẩm của bạn' },
+    { id: 'social', name: 'Social Post', desc: 'Làm ảnh Marketing', icon: SVG_ICONS.social, refText: 'Dán (Ctrl+V) hoặc tải lên ảnh sản phẩm/phong cách bạn muốn tham chiếu để kết quả tốt hơn' },
     { id: 'interior', name: 'Interior Studio', desc: 'Thiết kế nội thất', icon: SVG_ICONS.interior, refText: 'Tải lên ảnh phòng thô' }
 ];
 
@@ -206,8 +206,9 @@ const MODULE_FIELDS = {
     'social': [
         { type: 'text', id: 'social-prod-name', title: '1. Tên sản phẩm / Dịch vụ (Bắt buộc)', placeholder: 'Ví dụ: Trà sữa Matcha Latte, Giày Sneaker...' },
         { type: 'text', id: 'social-ad-desc', title: '2. Mô tả bối cảnh quảng cáo (Bắt buộc)', placeholder: 'Ví dụ: đặt trên bàn đá sang trọng, ánh sáng dịu...' },
-        { type: 'select', category: 'generalAtmosphere', title: '3. Cảm xúc (Vibe)' },
-        { type: 'select', category: 'textLanguage', title: '4. Ngôn ngữ chữ viết' }
+        { type: 'text', id: 'social-brand-text', title: '3. Tên thương hiệu hoặc chữ trên ảnh (Tùy chọn)', placeholder: 'Ví dụ: Panasonic, Mua 1 Tặng 1...' },
+        { type: 'select', category: 'generalAtmosphere', title: '4. Cảm xúc (Vibe)' },
+        { type: 'select', category: 'textLanguage', title: '5. Ngôn ngữ chữ viết' }
     ],
     'interior': [
         { type: 'text', id: 'interior-room', title: '1. Loại phòng (Bắt buộc)', placeholder: 'Ví dụ: Phòng khách, Phòng ngủ nhỏ...' },
@@ -287,10 +288,17 @@ window.updateMasterPrompt = function() {
     } else if (module === 'social') {
         const name = document.getElementById('social-prod-name')?.value.trim() || "sản phẩm";
         const desc = document.getElementById('social-ad-desc')?.value.trim() || "";
+        const brandText = document.getElementById('social-brand-text')?.value.trim() || "";
+        
         let subjectStr = `${name}`;
         if (desc) subjectStr += ` ${desc}`;
         
-        template = `Ảnh chụp quảng cáo sản phẩm sạch sẽ, chuyên nghiệp về ${subjectStr} dùng cho bài đăng marketing, không chứa giao diện điện thoại hay khung bài đăng, không chứa bối cảnh nền phức tạp, màu sắc chủ đạo sạch sẽ làm nổi bật sản phẩm, [generalAtmosphere], [textLanguage]`;
+        let brandStr = "";
+        if (brandText) {
+            brandStr = `, kèm theo chữ viết hiển thị tên thương hiệu hoặc thông điệp '${brandText}'`;
+        }
+        
+        template = `Ảnh chụp quảng cáo sản phẩm chuyên nghiệp về ${subjectStr}${brandStr} dùng cho bài đăng marketing, [generalAtmosphere], [textLanguage]`;
 
     } else if (module === 'interior') {
         const room = document.getElementById('interior-room')?.value.trim() || "căn phòng";
@@ -351,8 +359,30 @@ const BLOCK_NAMES = {
 };
 
 const BLACKLIST = [
-    'máu', 'chết', 'giết', 'súng', 'đánh', 'sexy', 'nude', 'blood', 'kill', 'gun',
-    'bạo lực', 'chém', 'đâm', 'sex', '18+', 'khỏa thân', 'vũ khí', 'bom', 'ma túy', 'thuốc lá', 'rượu', 'bia'
+    // Tiếng Việt (Bạo lực / Vũ khí)
+    'máu', 'chết', 'giết', 'súng', 'bắn', 'chém', 'đâm', 'đánh nhau', 'đánh đập', 'bạo lực', 'tấn công', 
+    'vũ khí', 'bom', 'mìn', 'lựu đạn', 'dao găm', 'kiếm', 'đầu độc', 'tự tử', 'tự sát', 'con dao', 'lưỡi dao',
+    
+    // Tiếng Việt (Người lớn / Nhạy cảm)
+    'sexy', 'nude', 'sex', '18+', 'khỏa thân', 'khiêu dâm', 'đồi trụy', 'hôn nhau', 'ôm nhau',
+    
+    // Tiếng Việt (Chất kích thích / Tệ nạn)
+    'ma túy', 'thuốc lá', 'rượu', 'bia', 'cần sa', 'heroin', 'thuốc phiện', 'hút thuốc', 'uống rượu',
+    
+    // Tiếng Việt (Thô tục)
+    'đm', 'vcl', 'chửi',
+    
+    // English (Violence / Weapons)
+    'blood', 'kill', 'dead', 'death', 'shoot', 'gun', 'knife', 'sword', 'bomb', 'suicide', 'violence', 'attack', 'weapon', 'fight',
+    
+    // English (Adult / Sensitive)
+    'porn', 'erotic', 'hentai', 'breast', 'naked',
+    
+    // English (Substances)
+    'drug', 'cocaine', 'alcohol', 'beer', 'smoke', 'weed', 'cigarette',
+    
+    // English (Profanity)
+    'swear', 'curse', 'insult', 'abuse'
 ];
 
 const $ = id => document.getElementById(id);
@@ -1094,8 +1124,14 @@ async function generateAction(isImg2Vid) {
     }
 
     const normalizeStr = str => str.toLowerCase().normalize('NFC');
-    const cleanPrompt = normalizeStr(promptText);
-    const hasBadWord = BLACKLIST.some(word => cleanPrompt.includes(normalizeStr(word)));
+    // Replace all non-alphanumeric and non-space characters with space, collapse spaces, and wrap with spaces
+    const cleanPrompt = ' ' + promptText.toLowerCase().normalize('NFC').replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim() + ' ';
+    
+    const hasBadWord = BLACKLIST.some(word => {
+        const normalizedWord = normalizeStr(word);
+        return cleanPrompt.includes(' ' + normalizedWord + ' ');
+    });
+    
     if (hasBadWord) {
         alert('Ý tưởng này chưa phù hợp, thử mô tả khác nhé!');
         return;
