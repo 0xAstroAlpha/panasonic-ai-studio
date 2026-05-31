@@ -826,19 +826,26 @@ export function setupPromptBuilderLogic(isImg2Vid) {
                 triggerText.style.color = isNone ? 'inherit' : 'var(--primary-color)';
                 options.classList.remove('show');
 
+                const customInput = document.querySelector(`.block-custom-input[data-category="${category}"]`);
+
                 if (isAspectRatio) {
                     window.currentAspectRatio = val;
                 } else if (finalPrompt) {
-                    if (val === 'none') {
-                        window.currentBlocks[category] = null;
-                    } else {
-                        window.currentBlocks[category] = val;
-                        
-                        // Clear custom text input
-                        const customInput = document.querySelector(`.block-custom-input[data-category="${category}"]`);
+                    if (val === 'custom') {
                         if (customInput) {
+                            customInput.style.display = 'block';
+                            customInput.focus();
+                            window.currentBlocks[category] = customInput.value.trim() ? customInput.value.trim() : null;
+                        }
+                    } else {
+                        if (customInput) {
+                            customInput.style.display = 'none';
                             customInput.value = '';
-                            customInput.style.opacity = '0.5';
+                        }
+                        if (val === 'none') {
+                            window.currentBlocks[category] = null;
+                        } else {
+                            window.currentBlocks[category] = val;
                         }
                     }
                     updateMasterPrompt();
@@ -853,14 +860,6 @@ export function setupPromptBuilderLogic(isImg2Vid) {
             input.style.opacity = '1';
             const category = e.target.getAttribute('data-category');
             const val = e.target.value.trim();
-            
-            // Reset Select Dropdown
-            const select = document.querySelector(`.custom-select[data-category="${category}"]`);
-            if (select) {
-                select.querySelectorAll('.option-item').forEach(o => o.classList.remove('selected'));
-                select.querySelector('.trigger-text').innerText = `-- Chọn ${BLOCK_NAMES[category]} --`;
-                select.querySelector('.trigger-text').style.color = 'inherit';
-            }
             
             if (finalPrompt) {
                 window.currentBlocks[category] = val ? val : null;
@@ -916,60 +915,87 @@ export function renderPlayground() {
         `;
     }
 
-    fields.forEach(field => {
+    const mainFields = fields.filter(f => f.type === 'text' || f.type === 'file');
+    const selectFields = fields.filter(f => f.type === 'select');
+
+    let mainFieldsHtml = '';
+    mainFields.forEach(field => {
         if (field.type === 'file') {
-            dropdownsHtml += `
-                <div class="block-group">
-                    <div class="block-title">${field.title}</div>
-                    <div class="sketch-upload-area" id="sketch-upload-zone" style="border: 2px dashed rgba(0, 103, 217, 0.3); background: rgba(0, 103, 217, 0.03); border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative;">
+            mainFieldsHtml += `
+                <div class="block-group" style="margin-bottom: 12px;">
+                    <div class="block-title" style="font-size:0.82rem; font-weight:700; color:var(--text-main); margin-bottom:6px;">${field.title}</div>
+                    <div class="sketch-upload-area" id="sketch-upload-zone" style="border: 2px dashed rgba(0, 103, 217, 0.3); background: rgba(0, 103, 217, 0.03); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative;">
                         <input type="file" id="${field.id}" accept="image/*" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;">
-                        <div class="sketch-upload-icon" style="font-size: 2rem; margin-bottom: 8px;">📝</div>
-                        <div class="sketch-upload-text" id="sketch-upload-text" style="font-size: 0.85rem; color: var(--primary-blue); font-weight: 600;">${field.placeholder}</div>
-                        <div class="sketch-upload-sub" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Hỗ trợ ảnh JPG, PNG dưới 20MB</div>
+                        <div class="sketch-upload-icon" style="font-size: 1.5rem; margin-bottom: 4px;">📝</div>
+                        <div class="sketch-upload-text" id="sketch-upload-text" style="font-size: 0.82rem; color: var(--primary-blue); font-weight: 600;">${field.placeholder}</div>
+                        <div class="sketch-upload-sub" style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">Hỗ trợ ảnh JPG, PNG dưới 20MB</div>
                         
                         <!-- Sketch image preview -->
-                        <div class="sketch-preview-container" id="sketch-preview-container" style="display: none; margin-top: 12px; position: relative; width: 100%; max-height: 200px; border-radius: 8px; overflow: hidden; border: 1px solid var(--panel-border);">
-                            <img id="sketch-preview-img" src="" alt="Sketch Preview" style="max-width: 100%; max-height: 200px; object-fit: contain; display: block; margin: 0 auto;">
+                        <div class="sketch-preview-container" id="sketch-preview-container" style="display: none; margin-top: 8px; position: relative; width: 100%; max-height: 150px; border-radius: 8px; overflow: hidden; border: 1px solid var(--panel-border);">
+                            <img id="sketch-preview-img" src="" alt="Sketch Preview" style="max-width: 100%; max-height: 150px; object-fit: contain; display: block; margin: 0 auto;">
                             <button type="button" id="btn-remove-sketch" style="position: absolute; top: 8px; right: 8px; background: rgba(239, 68, 68, 0.9); border: none; color: white; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">X</button>
                         </div>
                     </div>
                 </div>
             `;
         } else if (field.type === 'text') {
-            dropdownsHtml += `
-                <div class="block-group">
-                    <div class="block-title">${field.title}</div>
-                    <input type="text" id="${field.id}" class="input-field block-text-input" placeholder="${field.placeholder}" style="width: 100%;">
+            mainFieldsHtml += `
+                <div class="block-group" style="margin-bottom: 12px;">
+                    <div class="block-title" style="font-size:0.82rem; font-weight:700; color:var(--text-main); margin-bottom:6px;">${field.title}</div>
+                    <input type="text" id="${field.id}" class="input-field block-text-input" placeholder="${field.placeholder}" style="width: 100%; font-size: 0.85rem; padding: 10px;">
                 </div>
             `;
-        } else if (field.type === 'select') {
-            const category = field.category;
-            const chipsData = CHIP_POOL[category];
-            if (!chipsData) return;
-            
-            let optionsList = chipsData.map(c => 
-                `<div class="option-item" data-category="${category}" data-val="${c.id}"><span style="margin-right: 8px;">${getOptionIcon(c.id)}</span><span class="option-label">${c.label}</span></div>`
-            ).join('');
-            
-            const hasCustomInput = category !== 'comicPanels' && category !== 'gender' && category !== 'country' && category !== 'age' && category !== 'characterStyle' && category !== 'scienceStyle' && category !== 'scienceContext';
-            const customInputHtml = hasCustomInput ? `<input type="text" class="input-field block-custom-input" data-category="${category}" style="margin-top:8px; font-size: 0.85rem; padding: 10px;" placeholder="Nhập ${field.title.split('. ')[1].toLowerCase()} và nhấn Enter...">` : '';
-
-            dropdownsHtml += `
-                <div class="block-group">
-                    <div class="block-title">${field.title}</div>
-                    <div class="custom-select" data-category="${category}">
-                        <div class="select-trigger">
-                            <span class="trigger-text">-- Chọn ${field.title.split('. ')[1]} --</span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        </div>
-                        <div class="select-options">
-                            ${optionsList}
-                        </div>
-                    </div>
-                    ${customInputHtml}
-                </div>`;
         }
     });
+
+    let selectFieldsHtml = '';
+    selectFields.forEach(field => {
+        const category = field.category;
+        const chipsData = CHIP_POOL[category];
+        if (!chipsData) return;
+        
+        let optionsList = chipsData.map(c => 
+            `<div class="option-item" data-category="${category}" data-val="${c.id}"><span style="margin-right: 8px;">${getOptionIcon(c.id)}</span><span class="option-label">${c.label}</span></div>`
+        ).join('');
+        
+        const hasCustomInput = category !== 'comicPanels' && category !== 'gender' && category !== 'country' && category !== 'age' && category !== 'characterStyle' && category !== 'scienceStyle' && category !== 'scienceContext';
+        
+        if (hasCustomInput) {
+            optionsList += `<div class="option-item" data-category="${category}" data-val="custom"><span style="margin-right: 8px;">✏️</span><span class="option-label" style="font-weight: 600; color: var(--primary-color);">Ý tưởng tự viết...</span></div>`;
+        }
+
+        const customInputHtml = hasCustomInput ? `<input type="text" class="input-field block-custom-input" data-category="${category}" style="margin-top:8px; font-size: 0.85rem; padding: 10px; display: none;" placeholder="Nhập ${field.title.split('. ')[1].toLowerCase()} và nhấn Enter...">` : '';
+
+        selectFieldsHtml += `
+            <div class="block-group" style="margin-bottom: 12px;">
+                <div class="block-title" style="font-size:0.82rem; font-weight:700; color:var(--text-main); margin-bottom:6px;">${field.title}</div>
+                <div class="custom-select" data-category="${category}">
+                    <div class="select-trigger" style="padding: 10px 12px; font-size: 0.85rem;">
+                        <span class="trigger-text">-- Chọn ${field.title.split('. ')[1]} --</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="select-options">
+                        ${optionsList}
+                    </div>
+                </div>
+                ${customInputHtml}
+            </div>`;
+    });
+
+    dropdownsHtml += `
+        <div class="input-group-panel main-idea-group" style="background: rgba(255, 255, 255, 0.45); border: 1px solid rgba(0, 103, 217, 0.08); border-radius: 16px; padding: 14px; margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+            <div style="font-weight: 700; color: var(--primary-color); margin-bottom: 12px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; border-bottom: 1px dashed rgba(0, 103, 217, 0.15); padding-bottom: 6px;">
+                <span>💡</span> Ý TƯỞNG CỦA EM
+            </div>
+            ${mainFieldsHtml}
+        </div>
+        <div class="input-group-panel style-custom-group" style="background: rgba(255, 255, 255, 0.45); border: 1px solid rgba(0, 103, 217, 0.08); border-radius: 16px; padding: 14px; margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+            <div style="font-weight: 700; color: var(--primary-color); margin-bottom: 12px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; border-bottom: 1px dashed rgba(0, 103, 217, 0.15); padding-bottom: 6px;">
+                <span>🎨</span> PHONG CÁCH & BỐI CẢNH
+            </div>
+            ${selectFieldsHtml}
+        </div>
+    `;
 
     const playground = document.getElementById('playground-area');
     if (!playground) return;
