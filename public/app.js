@@ -1,6 +1,7 @@
 // Dữ liệu ứng dụng
 const appState = {
     username: '',
+    role: '', // 'student' or 'teacher'
     nickname: '',
     avatar: '',
     generatedImages: [],
@@ -10,6 +11,53 @@ const appState = {
     gallerySelectMode: false,
     gallerySelectedIndices: []
 };
+
+const CREDENTIALS = {
+    // Teachers
+    'giaovien1': { pass: 'risupia123', role: 'teacher' },
+    'giaovien2': { pass: 'risupia123', role: 'teacher' },
+    'teacher1': { pass: 'risupia123', role: 'teacher' },
+    'teacher2': { pass: 'risupia123', role: 'teacher' },
+    // Students
+    'hocsinh1': { pass: 'risupia123', role: 'student' },
+    'hocsinh2': { pass: 'risupia123', role: 'student' },
+    'hocsinh3': { pass: 'risupia123', role: 'student' },
+    'student1': { pass: 'risupia123', role: 'student' },
+    'student2': { pass: 'risupia123', role: 'student' },
+    'student3': { pass: 'risupia123', role: 'student' }
+};
+
+const LIMITS = {
+    student: { images: 20, videos: 4 },
+    teacher: { images: 100, videos: 20 }
+};
+
+function getUsageKey(type) {
+    const key = `ai_studio_usage_${type}_${appState.username || 'unknown'}_${appState.nickname || 'unknown'}`;
+    return key;
+}
+
+function getUsageCount(type) {
+    const key = getUsageKey(type);
+    return parseInt(localStorage.getItem(key) || '0', 10);
+}
+
+function incrementUsageCount(type) {
+    const key = getUsageKey(type);
+    const count = getUsageCount(type) + 1;
+    localStorage.setItem(key, count.toString());
+}
+
+function checkLimits(type) {
+    const role = appState.role || 'student';
+    const limit = LIMITS[role][type];
+    const count = getUsageCount(type);
+    if (count >= limit) {
+        alert(`Bạn đã đạt giới hạn tạo ${type === 'images' ? 'ảnh' : 'video'} (${count}/${limit}). Hãy liên hệ giáo viên để được hỗ trợ!`);
+        return false;
+    }
+    return true;
+}
 
 const AVATARS = Array.from({length: 15}, (_, i) => 
     'https://api.dicebear.com/9.x/adventurer/svg?seed=stu' + (i+20) + '&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc'
@@ -393,7 +441,7 @@ let uploadedRefImage = null;
 let currentAspectRatio = '--ar 1:1';
 
 function init() {
-    const saved = sessionStorage.getItem('ai_studio_session');
+    const saved = localStorage.getItem('ai_studio_session');
     if (saved) {
         Object.assign(appState, JSON.parse(saved));
         if (appState.generatedImages.length > 0 && typeof appState.generatedImages[0] === 'string') {
@@ -413,7 +461,7 @@ function init() {
 
 function handleLogout() {
     if(confirm('Bạn có chắc chắn muốn thoát?\nToàn bộ tác phẩm chưa tải xuống sẽ bị xóa mất hoàn toàn!')) {
-        sessionStorage.removeItem('ai_studio_session');
+        localStorage.removeItem('ai_studio_session');
         appState.username = ''; appState.nickname = ''; appState.avatar = ''; appState.generatedImages = [];
         updateHeader();
         renderLogin();
@@ -450,8 +498,9 @@ function updateNavState() {
 }
 
 function saveSession() {
-    sessionStorage.setItem('ai_studio_session', JSON.stringify(appState));
+    localStorage.setItem('ai_studio_session', JSON.stringify(appState));
     updateHeader();
+    if (window.updateSidebarUser) window.updateSidebarUser();
 }
 
 function updateHeader() {
@@ -464,14 +513,14 @@ function renderLanding() {
     // Hide navigation, make header transparent, and remove top padding
     document.body.classList.add('landing-mode');
     const landingModules = [
-        { id: 'comic', name: 'Comic Studio', role: ['Họa sĩ truyện tranh', 'Nhà thiết kế đồ họa', 'Storyteller'], style: 'card-blue', img: 'floating_ai_comic_1780132422887.png' },
-        { id: 'fashion', name: 'Fashion Studio', role: ['Nhà thiết kế thời trang', 'Stylist', 'Brand marketing'], style: 'card-purple', img: 'floating_ai_fashion_1780132445445.png' },
-        { id: 'film', name: 'Film Poster', role: ['Đạo diễn', 'Nhà thiết kế poster', 'Marketing phim'], style: 'card-teal', img: 'floating_ai_film_1780133727712.png' },
-        { id: 'game', name: 'Game Studio', role: ['Game designer', 'Concept artist', '3D artist'], style: 'card-green', img: 'floating_ai_game_1780132467636.png' },
-        { id: 'book', name: 'Book Cover', role: ['Thiết kế bìa sách', 'Nhà xuất bản', 'Illustrator'], style: 'card-blue', img: 'hero_art_1780131938041.png' },
-        { id: 'social', name: 'Social Post', role: ['Content creator', 'Social marketer', 'Nhà quảng cáo'], style: 'card-purple', img: 'floating_ai_social_1780133746694.png' },
-        { id: 'interior', name: 'Interior Studio', role: ['Kiến trúc sư nội thất', 'Thiết kế không gian', '3D Visualizer'], style: 'card-teal', img: 'hero_vr_1780131916291.png' },
-        { id: 'info', name: 'Infographic', role: ['Nhà giáo dục', 'Báo chí', 'Data designer'], style: 'card-green', img: 'hero_science_1780131889007.png' }
+        { id: 'comic', name: 'Comic Studio', role: ['Họa sĩ truyện tranh', 'Nhà thiết kế đồ họa', 'Storyteller'], style: 'card-blue', img: 'images/floating_ai_comic.png' },
+        { id: 'fashion', name: 'Fashion Studio', role: ['Nhà thiết kế thời trang', 'Stylist', 'Brand marketing'], style: 'card-purple', img: 'images/floating_ai_fashion.png' },
+        { id: 'film', name: 'Film Poster', role: ['Đạo diễn', 'Nhà thiết kế poster', 'Marketing phim'], style: 'card-teal', img: 'images/floating_ai_film.png' },
+        { id: 'game', name: 'Game Studio', role: ['Game designer', 'Concept artist', '3D artist'], style: 'card-green', img: 'images/floating_ai_game.png' },
+        { id: 'book', name: 'Book Cover', role: ['Thiết kế bìa sách', 'Nhà xuất bản', 'Illustrator'], style: 'card-blue', img: 'images/hero_art.png' },
+        { id: 'social', name: 'Social Post', role: ['Content creator', 'Social marketer', 'Nhà quảng cáo'], style: 'card-purple', img: 'images/floating_ai_social.png' },
+        { id: 'interior', name: 'Interior Studio', role: ['Kiến trúc sư nội thất', 'Thiết kế không gian', '3D Visualizer'], style: 'card-teal', img: 'images/hero_vr.png' },
+        { id: 'info', name: 'Infographic', role: ['Nhà giáo dục', 'Báo chí', 'Data designer'], style: 'card-green', img: 'images/hero_science.png' }
     ];
 
     const gridHtml = landingModules.map((m, index) => `
@@ -492,9 +541,9 @@ function renderLanding() {
                 <div class="hero-container">
                     <div class="hero-text-col reveal">
                         <div class="hero-logos reveal" style="display: flex; align-items: center; gap: 24px; margin-bottom: 32px;">
-                            <img src="risupia_logo.png" alt="Risupia Logo" style="height: 60px; object-fit: contain;">
+                            <img src="images/risupia_logo.png" alt="Risupia Logo" style="height: 60px; object-fit: contain;">
                             <span style="font-size: 2rem; color: rgba(255,255,255,0.4);">|</span>
-                            <img src="vidtory_logo.png" alt="Vidtory Logo" style="height: 50px; object-fit: contain;">
+                            <img src="images/vidtory_logo.png" alt="Vidtory Logo" style="height: 50px; object-fit: contain;">
                         </div>
                         <h1 class="hero-title" style="white-space: nowrap;"><span style="white-space: nowrap;">KHÁM PHÁ TIỀM NĂNG</span><br>CỦA <span class="highlight-yellow">AI SÁNG TẠO</span></h1>
                         <p class="hero-subtitle">Trải nghiệm thực tế cách AI tạo ảnh được ứng dụng trong các ngành nghề khác nhau. Phát triển tư duy và kỹ năng qua prompt.</p>
@@ -504,21 +553,21 @@ function renderLanding() {
                     </div>
                     <div class="hero-visuals-col reveal delay-2">
                         <div class="floating-card fc-1">
-                            <img src="floating_ai_comic_1780132422887.png" alt="Comic">
+                            <img src="images/floating_ai_comic.png" alt="Comic">
                             <div class="fc-info">
                                 <div><h4>Comic Studio</h4><p>Sáng tạo truyện tranh</p></div>
                                 <div class="fc-arrow">➔</div>
                             </div>
                         </div>
                         <div class="floating-card fc-2">
-                            <img src="floating_ai_fashion_1780132445445.png" alt="Fashion">
+                            <img src="images/floating_ai_fashion.png" alt="Fashion">
                             <div class="fc-info">
                                 <div><h4>Fashion Studio</h4><p>Thiết kế thời trang</p></div>
                                 <div class="fc-arrow">➔</div>
                             </div>
                         </div>
                         <div class="floating-card fc-3">
-                            <img src="floating_ai_game_1780132467636.png" alt="Game">
+                            <img src="images/floating_ai_game.png" alt="Game">
                             <div class="fc-info">
                                 <div><h4>Game Concept</h4><p>Xây dựng thế giới</p></div>
                                 <div class="fc-arrow">➔</div>
@@ -566,9 +615,9 @@ function renderLogin() {
             <div class="glass-panel login-view reveal" style="padding: 48px; border-radius: 24px; box-shadow: 0 24px 48px rgba(0,50,100,0.15); border: 1px solid rgba(255,255,255,0.6); background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); width: 100%; max-width: 480px;">
                 
                 <div class="hero-logos" style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 32px;">
-                    <img src="risupia_logo.png" alt="Risupia Logo" style="height: 48px; object-fit: contain;">
+                    <img src="images/risupia_logo.png" alt="Risupia Logo" style="height: 48px; object-fit: contain;">
                     <span style="font-size: 1.5rem; color: rgba(19, 32, 58, 0.3);">|</span>
-                    <img src="vidtory_logo.png" alt="Vidtory Logo" style="height: 40px; object-fit: contain;">
+                    <img src="images/vidtory_logo.png" alt="Vidtory Logo" style="height: 40px; object-fit: contain;">
                 </div>
                 
                 <h2 style="font-size: 2.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Đăng nhập</h2>
@@ -610,11 +659,23 @@ function renderLogin() {
 
     $('btn-login').addEventListener('click', () => {
         const user = $('login-user').value.trim();
-        if (user) {
+        const pass = $('login-pass').value.trim();
+        if (!user) {
+            alert('Vui lòng nhập tên đăng nhập');
+            return;
+        }
+        if (!pass) {
+            alert('Vui lòng nhập mật khẩu');
+            return;
+        }
+
+        const account = CREDENTIALS[user.toLowerCase()];
+        if (account && account.pass === pass) {
             appState.username = user;
+            appState.role = account.role;
             renderProfileSetup();
         } else {
-            alert('Vui lòng nhập tên đăng nhập');
+            alert('Tên đăng nhập hoặc mật khẩu không chính xác!');
         }
     });
 }
@@ -706,18 +767,27 @@ function renderMainLayout() {
         '<div class="nav-item ' + (appState.currentModule === m.id && appState.view === 'studio' ? 'active' : '') + '" data-id="' + m.id + '"><span class="icon">' + m.icon + '</span><span class="nav-item-text">' + m.name + '</span></div>'
     ).join('');
 
+    const role = appState.role || 'student';
+    const roleName = role === 'teacher' ? 'Giáo viên' : 'Học sinh';
+    const imgCount = getUsageCount('images');
+    const imgLimit = LIMITS[role].images;
+    const vidCount = getUsageCount('videos');
+    const vidLimit = LIMITS[role].videos;
+
     appContainer.innerHTML = `
         <div class="main-layout">
             <aside class="sidebar glass-panel" id="main-sidebar">
                 <div class="sidebar-logos" style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px; padding: 12px 0 16px 0; border-bottom: 1px solid var(--panel-border);">
-                    <img src="risupia_logo.png" alt="Risupia Logo" style="height: 32px; object-fit: contain;">
+                    <img src="images/risupia_logo.png" alt="Risupia Logo" style="height: 32px; object-fit: contain;">
                     <span style="font-size: 1.2rem; color: rgba(19, 32, 58, 0.2); font-weight: bold;">|</span>
-                    <img src="vidtory_logo.png" alt="Vidtory Logo" style="height: 26px; object-fit: contain;">
+                    <img src="images/vidtory_logo.png" alt="Vidtory Logo" style="height: 26px; object-fit: contain;">
                 </div>
                 <div class="sidebar-user">
                     <img src="${appState.avatar}" alt="Avatar">
-                    <h3>${appState.nickname}</h3>
-                    <span style="font-size:0.85rem; color:var(--text-muted)">⭐ Đã tạo: ${appState.generatedImages.length}</span>
+                    <h3 style="margin-bottom:4px;">${appState.nickname}</h3>
+                    <span class="studio-badge" style="margin-left:0; margin-bottom:8px; background:var(--primary-blue); font-size:11px;">${roleName}</span>
+                    <span style="font-size:0.85rem; color:var(--text-muted); display:block;">📷 Ảnh: ${imgCount}/${imgLimit}</span>
+                    <span style="font-size:0.85rem; color:var(--text-muted); display:block; margin-top:2px;">🎬 Video: ${vidCount}/${vidLimit}</span>
                 </div>
                 <nav class="sidebar-nav">
                     <div style="padding: 8px 12px; font-size: 0.8rem; font-weight: bold; color: var(--text-muted); text-transform: uppercase;">Studio Sáng Tạo</div>
@@ -739,6 +809,26 @@ function renderMainLayout() {
             </aside>
             <div class="playground" id="playground-area"></div>
         </div>`;
+
+    window.updateSidebarUser = () => {
+        const sidebarUser = document.querySelector('.sidebar-user');
+        if (!sidebarUser) return;
+        
+        const currentRole = appState.role || 'student';
+        const currentRoleName = currentRole === 'teacher' ? 'Giáo viên' : 'Học sinh';
+        const currentImgCount = getUsageCount('images');
+        const currentImgLimit = LIMITS[currentRole].images;
+        const currentVidCount = getUsageCount('videos');
+        const currentVidLimit = LIMITS[currentRole].videos;
+        
+        sidebarUser.innerHTML = `
+            <img src="${appState.avatar}" alt="Avatar">
+            <h3 style="margin-bottom:4px;">${appState.nickname}</h3>
+            <span class="studio-badge" style="margin-left:0; margin-bottom:8px; background:var(--primary-blue); font-size:11px;">${currentRoleName}</span>
+            <span style="font-size:0.85rem; color:var(--text-muted); display:block;">📷 Ảnh: ${currentImgCount}/${currentImgLimit}</span>
+            <span style="font-size:0.85rem; color:var(--text-muted); display:block; margin-top:2px;">🎬 Video: ${currentVidCount}/${currentVidLimit}</span>
+        `;
+    };
 
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', (e) => {
@@ -1107,6 +1197,12 @@ function setupReferenceUpload() {
 }
 
 async function generateAction(isImg2Vid) {
+    if (isImg2Vid) {
+        if (!checkLimits('videos')) return;
+    } else {
+        if (!checkLimits('images')) return;
+    }
+
     let promptText = '';
     
     if(isImg2Vid) {
@@ -1164,6 +1260,7 @@ async function generateAction(isImg2Vid) {
             if (data.error) throw new Error(data.error);
 
             appState.generatedImages.push({ url: data.url, type: 'video' });
+            incrementUsageCount('videos');
             saveSession();
             window.renderResultGrid();
         } else {
@@ -1193,6 +1290,7 @@ async function generateAction(isImg2Vid) {
             const img = new Image();
             img.onload = () => {
                 appState.generatedImages.push({ url: data.url, type: 'image' });
+                incrementUsageCount('images');
                 saveSession();
                 
                 window.renderResultGrid();
@@ -1493,6 +1591,8 @@ window.downloadFile = async (url, filename) => {
 };
 
 window.turnIntoVideo = async (index) => {
+    if (!checkLimits('videos')) return;
+
     const itemEl = $('gal-item-' + index);
     if(!itemEl) return;
     
@@ -1521,6 +1621,7 @@ window.turnIntoVideo = async (index) => {
             url: data.url,
             type: 'video'
         });
+        incrementUsageCount('videos');
         saveSession();
         renderGalleryView();
     } catch (e) {
