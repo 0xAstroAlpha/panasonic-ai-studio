@@ -987,17 +987,25 @@ export function renderPlayground() {
         const chipsData = CHIP_POOL[category];
         if (!chipsData) return;
         
-        let optionsList = chipsData.map(c => 
-            `<div class="option-item" data-category="${category}" data-val="${c.id}"><span style="margin-right: 8px;">${getOptionIcon(c.id)}</span><span class="option-label">${c.label}</span></div>`
-        ).join('');
+        const noneItem = chipsData.find(c => c.id === 'none');
+        const normalItems = chipsData.filter(c => c.id !== 'none');
+        
+        let optionsList = '';
+        if (noneItem) {
+            optionsList += `<div class="option-item" data-category="${category}" data-val="${noneItem.id}"><span style="margin-right: 8px;">${getOptionIcon(noneItem.id)}</span><span class="option-label">${noneItem.label}</span></div>`;
+        }
         
         const hasCustomInput = category !== 'comicPanels' && category !== 'gender' && category !== 'country' && category !== 'age' && category !== 'characterStyle' && category !== 'scienceStyle' && category !== 'scienceContext' && category !== 'infoLayout' && category !== 'infoStyle';
         
         if (hasCustomInput) {
             optionsList += `<div class="option-item" data-category="${category}" data-val="custom"><span style="margin-right: 8px;">✏️</span><span class="option-label" style="font-weight: 600; color: var(--primary-color);">Ý tưởng tự viết...</span></div>`;
         }
+        
+        optionsList += normalItems.map(c => 
+            `<div class="option-item" data-category="${category}" data-val="${c.id}"><span style="margin-right: 8px;">${getOptionIcon(c.id)}</span><span class="option-label">${c.label}</span></div>`
+        ).join('');
 
-        const customInputHtml = hasCustomInput ? `<input type="text" class="input-field block-custom-input" data-category="${category}" style="margin-top:8px; font-size: 0.85rem; padding: 10px; display: none;" placeholder="Nhập ${field.title.split('. ')[1].toLowerCase()} và nhấn Enter...">` : '';
+        const customInputHtml = hasCustomInput ? `<input type="text" class="input-field block-custom-input" data-category="${category}" style="margin-top:8px; font-size: 0.85rem; padding: 10px; display: none;" placeholder="Nhập ${field.title.split('. ')[1].toLowerCase()}...">` : '';
 
         selectFieldsHtml += `
             <div class="block-group" style="margin-bottom: 12px;">
