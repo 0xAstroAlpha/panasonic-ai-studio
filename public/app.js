@@ -337,18 +337,18 @@ function renderMainLayout() {
     appContainer.innerHTML = `
         <div class="main-layout">
             <aside class="sidebar glass-panel" id="main-sidebar">
-                <div class="sidebar-logos" style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px; padding: 12px 0 16px 0; border-bottom: 1px solid var(--panel-border);">
-                    <img src="images/risupia_logo.png" alt="Risupia Logo" style="height: 32px; object-fit: contain;">
+                <div class="sidebar-logos" style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; padding: 8px 0 12px 0; border-bottom: 1px solid var(--panel-border);">
+                    <img src="images/risupia_logo.png" alt="Risupia Logo" style="height: 28px; object-fit: contain;">
                     <span style="font-size: 1.2rem; color: rgba(19, 32, 58, 0.2); font-weight: bold;">|</span>
-                    <img src="images/vidtory_logo.png" alt="Vidtory Logo" style="height: 26px; object-fit: contain;">
+                    <img src="images/vidtory_logo.png" alt="Vidtory Logo" style="height: 22px; object-fit: contain;">
                 </div>
                 <div class="sidebar-user">
                     <img src="${appState.avatar}" alt="Avatar">
-                    <h3 style="margin-bottom:4px;">${appState.nickname}</h3>
-                    <span class="studio-badge" style="margin-left:0; margin-bottom:8px; background:var(--primary-blue); font-size:11px;">${roleName}</span>
-                    <div class="quota-container" style="width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+                    <h3 style="margin-bottom:2px;">${appState.nickname}</h3>
+                    <span class="studio-badge" style="margin-left:0; margin-bottom:4px; background:var(--primary-blue); font-size:11px;">${roleName}</span>
+                    <div class="quota-container" style="width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
                         <div class="quota-item">
-                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2px;">
                                 <span>📷 Ảnh đã vẽ</span>
                                 <span style="font-weight: 600;">${imgCount}/${imgLimit}</span>
                             </div>
@@ -357,7 +357,7 @@ function renderMainLayout() {
                             </div>
                         </div>
                         <div class="quota-item">
-                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2px;">
                                 <span>🎬 Phim ngắn</span>
                                 <span style="font-weight: 600;">${vidCount}/${vidLimit}</span>
                             </div>

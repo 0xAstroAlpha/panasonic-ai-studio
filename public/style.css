@@ -240,7 +240,7 @@ body.landing-mode .app-container {
 
 /* Sidebar */
 .sidebar {
-    width: 260px;
+    width: 280px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -250,6 +250,18 @@ body.landing-mode .app-container {
     top: 24px;
     transition: width 0.3s ease;
     overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .sidebar.collapsed {
@@ -277,17 +289,17 @@ body.landing-mode .app-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-bottom: 20px;
+    padding-bottom: 12px;
     border-bottom: 1px solid var(--panel-border);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .sidebar-user img {
-    width: 80px;
-    height: 80px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
     background: var(--bg-dark);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     border: 2px solid var(--panel-border);
     transition: all 0.3s;
 }
@@ -304,11 +316,12 @@ body.landing-mode .app-container {
 .nav-item {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 12px;
+    gap: 12px;
+    padding: 10px 12px;
     border-radius: 12px;
     cursor: pointer;
     font-weight: 500;
+    font-size: 0.92rem;
     color: var(--text-muted);
     transition: all 0.2s;
     border: 1px solid transparent;
