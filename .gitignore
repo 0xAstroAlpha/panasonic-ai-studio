@@ -1,0 +1,19 @@
+# Environment variables
+.env
+
+# Dependencies
+node_modules/
+
+# Test output
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# OS metadata
+.DS_Store
+
+# Next.js build directory
+.next/
+next-env.d.ts
+
