@@ -4,15 +4,23 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node server.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@vidtory/ai-sdk": "^1.1.0",
-    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
+    "next": "^16.2.6",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "cors": "^2.8.6",
     "express": "^5.2.1"
   }
 }
