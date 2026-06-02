@@ -103,12 +103,14 @@ function renderLanding() {
                 <div class="hero-container">
                     <div class="hero-text-col reveal">
                         <div class="hero-logos reveal" style="display: flex; align-items: center; gap: 24px; margin-bottom: 32px;">
+                            <img src="images/panasonic-logo.png" alt="Panasonic Logo" style="height: 50px; object-fit: contain;">
+                            <span style="font-size: 2rem; color: rgba(255,255,255,0.4);">|</span>
                             <img src="images/risupia_logo.png" alt="Risupia Logo" style="height: 60px; object-fit: contain;">
                             <span style="font-size: 2rem; color: rgba(255,255,255,0.4);">|</span>
                             <img src="images/vidtory_logo.png" alt="Vidtory Logo" style="height: 50px; object-fit: contain;">
                         </div>
                         <h1 class="hero-title" style="white-space: nowrap;"><span style="white-space: nowrap;">KHÁM PHÁ TIỀM NĂNG</span><br>CỦA <span class="highlight-yellow">AI SÁNG TẠO</span></h1>
-                        <p class="hero-subtitle">Trải nghiệm thực tế cách AI tạo ảnh được ứng dụng trong các ngành nghề khác nhau. Phát triển tư duy và kỹ năng qua prompt.</p>
+                        <p class="hero-subtitle">Trải nghiệm những công cụ AI mới nhất, giúp em hiện thực hoá ước mơ sáng tạo của bản thân</p>
                         <div class="hero-actions">
                             <button id="btn-start-landing" class="btn-lime">Trải nghiệm ngay <span style="background:white; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; margin-left:8px; color:black; font-size:14px">➔</span></button>
                         </div>
@@ -177,6 +179,8 @@ function renderLogin() {
             <div class="glass-panel login-view reveal" style="padding: 48px; border-radius: 24px; box-shadow: 0 24px 48px rgba(0,50,100,0.15); border: 1px solid rgba(255,255,255,0.6); background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); width: 100%; max-width: 480px;">
                 
                 <div class="hero-logos" style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 32px;">
+                    <img src="images/panasonic-logo.png" alt="Panasonic Logo" style="height: 40px; object-fit: contain;">
+                    <span style="font-size: 1.5rem; color: rgba(19, 32, 58, 0.3);">|</span>
                     <img src="images/risupia_logo.png" alt="Risupia Logo" style="height: 48px; object-fit: contain;">
                     <span style="font-size: 1.5rem; color: rgba(19, 32, 58, 0.3);">|</span>
                     <img src="images/vidtory_logo.png" alt="Vidtory Logo" style="height: 40px; object-fit: contain;">
@@ -339,6 +343,8 @@ function renderMainLayout() {
         <div class="main-layout">
             <aside class="sidebar glass-panel" id="main-sidebar">
                 <div class="sidebar-logos" style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; padding: 8px 0 12px 0; border-bottom: 1px solid var(--panel-border);">
+                    <img src="images/panasonic-logo.png" alt="Panasonic Logo" style="height: 24px; object-fit: contain;">
+                    <span style="font-size: 1.2rem; color: rgba(19, 32, 58, 0.2); font-weight: bold;">|</span>
                     <img src="images/risupia_logo.png" alt="Risupia Logo" style="height: 28px; object-fit: contain;">
                     <span style="font-size: 1.2rem; color: rgba(19, 32, 58, 0.2); font-weight: bold;">|</span>
                     <img src="images/vidtory_logo.png" alt="Vidtory Logo" style="height: 22px; object-fit: contain;">
