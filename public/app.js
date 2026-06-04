@@ -101,9 +101,7 @@ function renderLanding() {
                 <div class="hero-container">
                     <div class="hero-text-col reveal">
                         <div class="hero-logos reveal" style="display: flex; align-items: center; gap: 24px; margin-bottom: 32px;">
-                            <img src="images/panasonic_logo.png" alt="Panasonic Logo" style="height: 85px; object-fit: contain;">
-                            <span style="font-size: 2rem; color: rgba(255,255,255,0.4);">|</span>
-                            <img src="images/risupia_logo.png" alt="Risupia Logo" style="height: 60px; object-fit: contain;">
+                            <img src="images/Panasonic.png" alt="Panasonic Logo" style="height: 85px; object-fit: contain;">
                             <span style="font-size: 2rem; color: rgba(255,255,255,0.4);">|</span>
                             <img src="images/vidtory_logo.png" alt="Vidtory Logo" style="height: 50px; object-fit: contain;">
                         </div>
@@ -177,9 +175,7 @@ function renderLogin() {
             <div class="glass-panel login-view reveal" style="padding: 48px; border-radius: 24px; box-shadow: 0 24px 48px rgba(0,50,100,0.15); border: 1px solid rgba(255,255,255,0.6); background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); width: 100%; max-width: 480px;">
                 
                 <div class="hero-logos" style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 32px;">
-                    <img src="images/panasonic_logo.png" alt="Panasonic Logo" style="height: 65px; object-fit: contain;">
-                    <span style="font-size: 1.5rem; color: rgba(19, 32, 58, 0.3);">|</span>
-                    <img src="images/risupia_logo.png" alt="Risupia Logo" style="height: 48px; object-fit: contain;">
+                    <img src="images/Panasonic.png" alt="Panasonic Logo" style="height: 65px; object-fit: contain;">
                     <span style="font-size: 1.5rem; color: rgba(19, 32, 58, 0.3);">|</span>
                     <img src="images/vidtory_logo.png" alt="Vidtory Logo" style="height: 40px; object-fit: contain;">
                 </div>
@@ -341,9 +337,7 @@ function renderMainLayout() {
         <div class="main-layout">
             <aside class="sidebar glass-panel" id="main-sidebar">
                 <div class="sidebar-logos" style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; padding: 8px 0 12px 0; border-bottom: 1px solid var(--panel-border);">
-                    <img src="images/panasonic_logo.png" alt="Panasonic Logo" style="height: 40px; object-fit: contain;">
-                    <span style="font-size: 1.2rem; color: rgba(19, 32, 58, 0.2); font-weight: bold;">|</span>
-                    <img src="images/risupia_logo.png" alt="Risupia Logo" style="height: 28px; object-fit: contain;">
+                    <img src="images/Panasonic.png" alt="Panasonic Logo" style="height: 40px; object-fit: contain;">
                     <span style="font-size: 1.2rem; color: rgba(19, 32, 58, 0.2); font-weight: bold;">|</span>
                     <img src="images/vidtory_logo.png" alt="Vidtory Logo" style="height: 22px; object-fit: contain;">
                 </div>
