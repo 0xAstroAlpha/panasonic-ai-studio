@@ -96,13 +96,19 @@ function renderLanding() {
 
     appContainer.innerHTML = `
         <div class="landing-view">
+            <!-- Ambient Background Blobs -->
+            <div class="ambient-blob blob-1"></div>
+            <div class="ambient-blob blob-2"></div>
+            <div class="ambient-blob blob-3"></div>
+            <div class="ambient-blob blob-4"></div>
+            
             <!-- Hero Section -->
             <div class="hero-section">
                 <div class="hero-container">
                     <div class="hero-text-col reveal">
                         <div class="hero-logos reveal" style="display: flex; align-items: center; gap: 24px; margin-bottom: 32px;">
                             <img src="images/Panasonic.png" alt="Panasonic Logo" style="height: 85px; object-fit: contain;">
-                            <span style="font-size: 2rem; color: rgba(255,255,255,0.4);">|</span>
+                            <span style="font-size: 2rem; color: rgba(19, 32, 58, 0.25);">|</span>
                             <img src="images/vidtory_logo.png" alt="Vidtory Logo" style="height: 50px; object-fit: contain;">
                         </div>
                         <h1 class="hero-title" style="white-space: nowrap;"><span style="white-space: nowrap;">KHÁM PHÁ TIỀM NĂNG</span><br>CỦA <span class="highlight-yellow">AI SÁNG TẠO</span></h1>
