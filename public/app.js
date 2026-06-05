@@ -96,47 +96,72 @@ function renderLanding() {
 
     appContainer.innerHTML = `
         <div class="landing-view">
-            <!-- Ambient Background Blobs -->
-            <div class="ambient-blob blob-1"></div>
-            <div class="ambient-blob blob-2"></div>
-            <div class="ambient-blob blob-3"></div>
-            <div class="ambient-blob blob-4"></div>
             
             <!-- Hero Section -->
             <div class="hero-section">
                 <div class="hero-container">
+                    <!-- Ambient Background Blobs -->
+                    <div class="ambient-blob blob-1"></div>
+                    <div class="ambient-blob blob-2"></div>
+                    <div class="ambient-blob blob-3"></div>
+                    <div class="ambient-blob blob-4"></div>
+                    
+                    <!-- Galaxy Sparkles & Bubbles -->
+                    <div class="sparkle sp-1"></div>
+                    <div class="sparkle sp-2"></div>
+                    <div class="sparkle sp-3"></div>
+                    <div class="sparkle sp-4"></div>
+                    <div class="sparkle sp-5"></div>
+                    <div class="glass-bubble"></div>
+                    
                     <div class="hero-text-col reveal">
-                        <div class="hero-logos reveal" style="display: flex; align-items: center; gap: 24px; margin-bottom: 32px;">
-                            <img src="images/Panasonic.png" alt="Panasonic Logo" style="height: 85px; object-fit: contain;">
-                            <span style="font-size: 2rem; color: rgba(19, 32, 58, 0.25);">|</span>
-                            <img src="images/vidtory_logo.png" alt="Vidtory Logo" style="height: 50px; object-fit: contain;">
+                        <div class="hero-logos-pill reveal">
+                            <img src="images/Panasonic.png" alt="Panasonic Logo" class="logo-panasonic">
+                            <span class="logo-divider"></span>
+                            <img src="images/vidtory_logo.png" alt="Vidtory Logo" class="logo-vidtory">
                         </div>
-                        <h1 class="hero-title" style="white-space: nowrap;"><span style="white-space: nowrap;">KHÁM PHÁ TIỀM NĂNG</span><br>CỦA <span class="highlight-yellow">AI SÁNG TẠO</span></h1>
-                        <p class="hero-subtitle">Trải nghiệm những công cụ AI mới nhất, giúp em hiện thực hoá ước mơ sáng tạo của bản thân</p>
+                        <h1 class="hero-title" style="white-space: nowrap;"><span style="white-space: nowrap;">KHÁM PHÁ TIỀM NĂNG</span><br>CỦA <span style="color: #0077FF;">AI</span> <span style="color: #00C853;">SÁNG TẠO</span></h1>
+                        <p class="hero-subtitle">Trải nghiệm những công cụ AI mới nhất,<br>giúp em hiện thực hoá ước mơ sáng tạo của bản thân</p>
                         <div class="hero-actions">
-                            <button id="btn-start-landing" class="btn-lime">Trải nghiệm ngay <span style="background:white; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; margin-left:8px; color:black; font-size:14px">➔</span></button>
+                            <button id="btn-start-landing" class="btn-lime">Trải nghiệm ngay <span style="margin-left:8px; font-weight: bold;">➔</span></button>
+                        </div>
+                        <div class="hero-features reveal delay-1">
+                            <div class="feature-item">
+                                <div class="feature-icon"><img src="images/icon-ai.svg" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'%2310b981\\' stroke-width=\\'2\\'><path d=\\'M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM4 10a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2zm12 0a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2zM12 16a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2z\\'/></svg>'" alt="AI"></div>
+                                <span>Công cụ AI<br>hiện đại</span>
+                            </div>
+                            <div class="feature-divider"></div>
+                            <div class="feature-item">
+                                <div class="feature-icon"><img src="images/icon-shield.svg" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'%2310b981\\' stroke-width=\\'2\\'><path d=\\'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\\'/></svg>'" alt="Shield"></div>
+                                <span>An toàn<br>& bảo mật</span>
+                            </div>
+                            <div class="feature-divider"></div>
+                            <div class="feature-item">
+                                <div class="feature-icon"><img src="images/icon-edu.svg" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'%2310b981\\' stroke-width=\\'2\\'><path d=\\'M22 10v6M2 10l10-5 10 5-10 5z\\'/><path d=\\'M6 12v5c3 3 9 3 12 0v-5\\'/></svg>'" alt="Edu"></div>
+                                <span>Hỗ trợ học tập<br>sáng tạo</span>
+                            </div>
                         </div>
                     </div>
                     <div class="hero-visuals-col reveal delay-2">
                         <div class="floating-card fc-1">
-                            <img src="images/floating_ai_comic.png" alt="Comic">
+                            <div class="fc-img-wrapper"><img src="images/floating_ai_comic.png" alt="Comic"></div>
                             <div class="fc-info">
+                                <div class="fc-icon" style="background:#dcfce7; color:#16a34a;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
                                 <div><h4>Xưởng Truyện Tranh</h4><p>Kể chuyện bằng tranh ảnh</p></div>
-                                <div class="fc-arrow">➔</div>
                             </div>
                         </div>
                         <div class="floating-card fc-2">
-                            <img src="images/floating_ai_character.png" alt="Character">
+                            <div class="fc-img-wrapper"><img src="images/floating_ai_character.png" alt="Character"></div>
                             <div class="fc-info">
+                                <div class="fc-icon" style="background:#dcfce7; color:#16a34a;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4M8 16h8"/></svg></div>
                                 <div><h4>Tạo Nhân Vật</h4><p>Thiết kế Mascot dễ thương</p></div>
-                                <div class="fc-arrow">➔</div>
                             </div>
                         </div>
                         <div class="floating-card fc-3">
-                            <img src="images/hero_science.png" alt="Science">
+                            <div class="fc-img-wrapper"><img src="images/hero_science.png" alt="Science"></div>
                             <div class="fc-info">
+                                <div class="fc-icon" style="background:#dcfce7; color:#16a34a;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21h6M12 17v4M12 17a4 4 0 0 0 4-4V7a4 4 0 0 0-8 0v6a4 4 0 0 0 4 4z"/></svg></div>
                                 <div><h4>Khoa Học Vui</h4><p>Minh họa hiện tượng lý thú</p></div>
-                                <div class="fc-arrow">➔</div>
                             </div>
                         </div>
                     </div>
