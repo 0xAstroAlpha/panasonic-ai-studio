@@ -1158,9 +1158,9 @@ body.landing-mode .app-container {
 .hero-section {
     width: 100%;
     background: transparent;
-    padding: 100px 24px;
+    padding: 60px 24px 80px 24px;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     display: flex;
     justify-content: center;
 }
@@ -1263,9 +1263,9 @@ body.landing-mode .app-container {
     animation: float 6s ease-in-out infinite;
 }
 
-.fc-1 { top: 0; right: 0; width: 380px; transform: rotate(5deg); animation-delay: 0s; z-index: 3; }
-.fc-2 { bottom: 20px; left: 0; width: 320px; transform: rotate(-3deg); animation-delay: 1s; z-index: 2; }
-.fc-3 { bottom: 80px; right: 40px; width: 280px; transform: rotate(8deg); animation-delay: 2s; z-index: 1; }
+.fc-1 { top: 20px; right: 20px; width: 380px; transform: rotate(5deg); animation-delay: 0s; z-index: 3; }
+.fc-2 { bottom: 40px; left: 20px; width: 320px; transform: rotate(-3deg); animation-delay: 1s; z-index: 2; }
+.fc-3 { bottom: 60px; right: 60px; width: 280px; transform: rotate(8deg); animation-delay: 2s; z-index: 1; }
 
 .floating-card img {
     width: 100%;
@@ -1361,20 +1361,20 @@ body.landing-mode .app-container {
 .card-teal { background: linear-gradient(135deg, #00BFD6, #46F2D6); }
 .card-green { 
     background: linear-gradient(135deg, #7DDC2C, #B7E931); 
-    color: #13203A;
+    color: #FFFFFF;
 }
 
 .card-green h3 {
-    color: #13203A !important;
+    color: #FFFFFF !important;
 }
 
 .card-green li {
-    color: #13203A;
+    color: #FFFFFF;
 }
 
 .card-green .btn-arrow-circle {
-    background: #13203A;
-    color: #FFFFFF;
+    background: #FFFFFF;
+    color: #13203A;
 }
 
 .feature-card h3 {
@@ -1861,7 +1861,7 @@ body.landing-mode .app-container {
 .ambient-blob.blob-3 { background: radial-gradient(circle, #d9f99d, transparent 65%); width: 800px; height: 800px; top: 10%; left: 30%; opacity: 0.7; }
 
 /* Glowing Light Arcs */
-.landing-view::before {
+.hero-section::before {
     content: '';
     position: absolute;
     width: 800px;
@@ -1876,7 +1876,7 @@ body.landing-mode .app-container {
     z-index: 1;
 }
 
-.landing-view::after {
+.hero-section::after {
     content: '';
     position: absolute;
     width: 1000px;
@@ -1898,16 +1898,16 @@ body.landing-mode .app-container {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.8);
-    padding: 12px 24px;
+    padding: 16px 36px;
     border-radius: 9999px;
     box-shadow: 0 8px 32px rgba(255, 255, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.3);
     margin-bottom: 32px;
     position: relative;
     z-index: 2;
 }
-.logo-panasonic { height: 40px; object-fit: contain; }
-.logo-vidtory { height: 28px; object-fit: contain; }
-.logo-divider { width: 1px; height: 32px; background: #e2e8f0; margin: 0 24px; }
+.logo-panasonic { height: 60px; object-fit: contain; }
+.logo-vidtory { height: 44px; object-fit: contain; }
+.logo-divider { width: 1.5px; height: 48px; background: #cbd5e1; margin: 0 32px; }
 
 .hero-title {
     font-size: 4rem !important;
@@ -1977,9 +1977,7 @@ body.landing-mode .app-container {
     justify-content: center;
 }
 .feature-divider {
-    width: 1px;
-    height: 32px;
-    background: #e2e8f0 !important;
+    display: none !important;
 }
 
 /* Floating Cards Layout */
@@ -1994,23 +1992,23 @@ body.landing-mode .app-container {
 }
 
 .floating-card {
-    background: rgba(255, 255, 255, 0.4) !important;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.8) !important;
-    border-radius: 20px !important;
-    padding: 0 !important;
-    box-shadow: 0 8px 32px rgba(255, 255, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+    border: 3px solid rgba(255, 255, 255, 0.9) !important;
+    border-radius: 24px !important;
+    padding: 12px 12px 0 12px !important;
+    box-shadow: 0 16px 40px rgba(255, 255, 255, 0.5), inset 0 0 16px rgba(255, 255, 255, 0.6) !important;
     display: flex !important;
     flex-direction: column !important;
     position: absolute;
     overflow: visible !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
 }
 
 .floating-card .fc-img-wrapper {
     width: 100%;
     height: 220px;
-    border-radius: 14px 14px 0 0;
+    border-radius: 16px 16px 0 0;
     position: relative;
 }
 
@@ -2018,15 +2016,13 @@ body.landing-mode .app-container {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 14px 14px 0 0 !important;
+    border-radius: 16px 16px 0 0 !important;
 }
 
 .floating-card .fc-info {
-    padding: 16px !important; 
-    background: rgba(255, 255, 255, 0.2) !important;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-radius: 0 0 14px 14px !important;
+    padding: 16px 8px !important; 
+    background: transparent !important;
+    border-radius: 0 0 16px 16px !important;
     position: relative;
     min-height: auto;
     display: flex;
@@ -2040,7 +2036,7 @@ body.landing-mode .app-container {
     width: 48px;
     height: 48px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.6) !important;
+    background: #f0fdf4 !important;
     color: #16a34a !important;
     display: flex;
     align-items: center;
@@ -2064,9 +2060,9 @@ body.landing-mode .app-container {
 }
 
 /* Card Placements matching design */
-.fc-1 { width: 340px !important; top: -10px !important; right: 20px !important; transform: rotate(5deg) !important; z-index: 1 !important; }
-.fc-2 { width: 320px !important; bottom: 120px !important; left: -20px !important; transform: rotate(-5deg) !important; z-index: 3 !important; }
-.fc-3 { width: 300px !important; bottom: -10px !important; right: -10px !important; transform: rotate(3deg) !important; z-index: 2 !important; }
+.fc-1 { width: 330px !important; top: -30px !important; right: 50px !important; bottom: auto !important; transform: rotate(5deg) !important; z-index: 1 !important; }
+.fc-2 { width: 320px !important; top: 140px !important; left: 20px !important; bottom: auto !important; transform: rotate(-3deg) !important; z-index: 2 !important; }
+.fc-3 { width: 310px !important; top: 310px !important; right: 10px !important; bottom: auto !important; transform: rotate(4deg) !important; z-index: 3 !important; }
 
 
 /* Sparkles & Galaxy Details */
