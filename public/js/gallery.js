@@ -106,7 +106,7 @@ export async function turnIntoVideo(index) {
 
     const itemEl = document.getElementById('gal-item-' + index);
     if (!itemEl) return;
-    
+
     itemEl.innerHTML += `
         <div style="position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:12px; z-index:10;">
             <div class="loading-spinner" style="border: 3px solid rgba(255,255,255,0.1); border-left-color: var(--secondary-color); border-radius: 50%; width: 32px; height: 32px; animation: spin 1s linear infinite; margin-bottom: 8px"></div>
@@ -216,7 +216,7 @@ export function renderGalleryView() {
             const isSelected = appState.gallerySelectedIndices.includes(index);
             const selClass = isSelected ? 'selected' : '';
             const clickHandler = isMultiSelect ? `onclick="window.toggleItemSelect(${index})"` : `onclick="window.showLightbox('${item.url}', '${item.type}')"`;
-            
+
             let actionsHtml = '';
             if (!isMultiSelect) {
                 if (item.type === 'video') {
@@ -250,7 +250,7 @@ export function renderGalleryView() {
         if (isMultiSelect && appState.gallerySelectedIndices.length > 0) {
             multiActionsHtml = `
                 <div class="gallery-multi-actions" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; background: rgba(0,32,96,0.95); padding: 12px 24px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); color: white; align-items: center; z-index: 1000;">
-                    <span style="font-weight:600">Đã chọn ${appState.gallerySelectedIndices.length}</span>
+                    <span style="font-weight:600; color: white;">Đã chọn ${appState.gallerySelectedIndices.length}</span>
                     <button class="btn-multi-download" onclick="window.downloadSelected()" style="background: var(--primary-lime); border: none; border-radius: 8px; color: #002060; padding: 8px 16px; font-weight: 700; cursor: pointer;">Tải xuống</button>
                     <button class="btn-multi-delete" onclick="window.deleteSelected()" style="background: #ef4444; border: none; border-radius: 8px; color: white; padding: 8px 16px; font-weight: 700; cursor: pointer;">Xóa</button>
                 </div>

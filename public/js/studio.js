@@ -162,7 +162,7 @@ export const MODULE_FIELDS = {
         { type: 'select', category: 'textLanguage', title: '6. Có chữ tiếng gì?' }
     ],
     'sketch': [
-        { type: 'file', id: 'sketch-upload', title: '1. Bản phác thảo của em', required: true, placeholder: 'Chụp ảnh nét vẽ trên giấy của em rồi tải lên đây nhé!' },
+        { type: 'file', id: 'sketch-upload', title: '1. Bản phác thảo của em', required: true, placeholder: 'Tải lên hoặc dán ảnh phác thảo (Ctrl+V) vào đây nhé!' },
         { type: 'text', id: 'sketch-desc', title: '2. Bức tranh vẽ gì? Ý tưởng?', required: true, placeholder: 'Ví dụ: chú thỏ con ôm củ cà rốt, phi thuyền bay giữa vũ trụ...' },
         { type: 'select', category: 'sketchStyle', title: '3. Vẽ theo kiểu nào?', required: true },
         { type: 'select', category: 'comicContext', title: '4. Ở đâu? Lúc nào?' },
@@ -215,7 +215,7 @@ export function updateMasterPrompt() {
         else if (charDesc) charStr = `nhân vật ${charDesc}`;
         else if (charName) charStr = `nhân vật ${charName}`;
         else charStr = "một nhân vật";
-        
+
         templateText = `Tranh truyện tranh vẽ ${charStr} ${action}, [comicPanels], [comicStyle], bối cảnh [comicContext], [generalAtmosphere], [textLanguage]`;
         templateHtml = `Tranh truyện tranh vẽ <span class="prompt-token tag-subject">${charStr}</span> <span class="prompt-token tag-action">${action}</span>, [comicPanels], [comicStyle], bối cảnh [comicContext], [generalAtmosphere], [textLanguage]`;
         formulaText = "📝 Công thức: [Nhân vật] + [Hành động] + [Chia ô] + [Phong cách] + [Bối cảnh]";
@@ -226,7 +226,7 @@ export function updateMasterPrompt() {
         let subjectStr = "";
         if (name) subjectStr = `nhân vật game tên '${name}' (${desc})`;
         else subjectStr = `nhân vật game ${desc}`;
-        
+
         templateText = `Bản vẽ concept art game của ${subjectStr} [gender] [country] [age], [gameStyle], bối cảnh [comicContext], [generalAtmosphere], [textLanguage]`;
         templateHtml = `Bản vẽ concept art game của <span class="prompt-token tag-subject">${subjectStr}</span> [gender] [country] [age], [gameStyle], bối cảnh [comicContext], [generalAtmosphere], [textLanguage]`;
         formulaText = "🎮 Công thức: [Nhân vật/Vật phẩm] + [Mô tả trang bị] + [Kiểu đồ họa] + [Môi trường]";
@@ -236,12 +236,12 @@ export function updateMasterPrompt() {
         const shape = document.getElementById('char-shape')?.value.trim() || "một chú mascot";
         const outfit = document.getElementById('char-outfit')?.value.trim() || "";
         const action = document.getElementById('char-action')?.value.trim() || "";
-        
+
         let charStr = shape;
         if (name) charStr = `nhân vật mascot tên '${name}' hình dạng ${shape}`;
         let outfitStr = outfit ? `, mặc ${outfit}` : "";
         let actionStr = action ? `, đang ${action}` : "";
-        
+
         templateText = `Bản vẽ thiết kế nhân vật mascot hoạt hình tinh nghịch dễ thương về ${charStr}${outfitStr}${actionStr}, [characterStyle], bối cảnh [comicContext], [generalAtmosphere], [textLanguage]`;
         templateHtml = `Bản vẽ thiết kế nhân vật mascot hoạt hình tinh nghịch dễ thương về <span class="prompt-token tag-subject">${charStr}</span><span class="prompt-token tag-action">${outfitStr}${actionStr}</span>, [characterStyle], bối cảnh [comicContext], [generalAtmosphere], [textLanguage]`;
         formulaText = "🧸 Công thức: [Nhân vật] + [Hình dáng] + [Trang phục] + [Hành động] + [Phong cách]";
@@ -250,7 +250,7 @@ export function updateMasterPrompt() {
         const topic = document.getElementById('science-topic')?.value.trim() || "hiện tượng khoa học";
         const details = document.getElementById('science-details')?.value.trim() || "";
         let detailStr = details ? `, mô tả chi tiết ${details}` : "";
-        
+
         templateText = `Tranh minh họa khoa học giáo dục trực quan sinh động về đề tài '${topic}'${detailStr}, [scienceStyle], bối cảnh [scienceContext], [generalAtmosphere], [textLanguage]`;
         templateHtml = `Tranh minh họa khoa học giáo dục trực quan sinh động về đề tài <span class="prompt-token tag-subject">'${topic}'</span><span class="prompt-token tag-action">${detailStr}</span>, [scienceStyle], bối cảnh [scienceContext], [generalAtmosphere], [textLanguage]`;
         formulaText = "🔬 Công thức: [Hiện tượng/Phát minh] + [Chi tiết vẽ] + [Phong cách vẽ] + [Bối cảnh]";
@@ -263,7 +263,7 @@ export function updateMasterPrompt() {
         const topic = document.getElementById('info-topic')?.value.trim() || "chủ đề thông tin";
         const details = document.getElementById('info-details')?.value.trim() || "";
         let detailStr = details ? `, mô tả chi tiết nội dung ${details}` : "";
-        
+
         templateText = `Thiết kế sơ đồ thông tin trực quan sinh động Infographic về '${topic}'${detailStr}, [infoLayout], [infoStyle], [generalAtmosphere], [textLanguage]`;
         templateHtml = `Thiết kế sơ đồ thông tin trực quan sinh động Infographic về <span class="prompt-token tag-subject">'${topic}'</span><span class="prompt-token tag-action">${detailStr}</span>, [infoLayout], [infoStyle], [generalAtmosphere], [textLanguage]`;
         formulaText = "📊 Công thức: [Tên Infographic] + [Nội dung chi tiết] + [Bố cục] + [Phong cách]";
@@ -273,7 +273,7 @@ export function updateMasterPrompt() {
         'comicPanels', 'comicStyle', 'comicContext', 'gameStyle', 'characterStyle', 'scienceStyle', 'scienceContext', 'sketchStyle',
         'gender', 'country', 'age', 'generalAtmosphere', 'textLanguage', 'infoLayout', 'infoStyle'
     ];
-    
+
     const BLOCK_TAGS = {
         comicStyle: 'tag-style',
         gameStyle: 'tag-style',
@@ -302,7 +302,7 @@ export function updateMasterPrompt() {
                 vnVal = `chữ viết hiển thị bằng ${val.toLowerCase()} (text in ${val.toLowerCase()})`;
             }
             templateText = templateText.replace(`[${block}]`, vnVal);
-            
+
             const tagClass = BLOCK_TAGS[block];
             const htmlVal = tagClass ? `<span class="prompt-token ${tagClass}">${vnVal}</span>` : vnVal;
             templateHtml = templateHtml.replace(`[${block}]`, htmlVal);
@@ -314,9 +314,9 @@ export function updateMasterPrompt() {
 
     templateText = templateText.replace(/,(\s*,)+/g, ',').replace(/\s+/g, ' ').replace(/ ,/g, ',').trim().replace(/,\s*$/, '');
     templateHtml = templateHtml.replace(/,(\s*,)+/g, ',').replace(/\s+/g, ' ').replace(/ ,/g, ',').trim().replace(/,\s*$/, '');
-    
+
     finalPrompt.value = templateText;
-    
+
     const livePreview = document.getElementById('live-prompt-preview');
     if (livePreview) {
         livePreview.innerHTML = templateHtml || `<span style="color:var(--text-muted)">Bắt đầu nhập liệu để thấy câu lệnh hình thành...</span>`;
@@ -334,7 +334,7 @@ export function applyScienceTemplate(idx) {
     const detailsInput = document.getElementById('science-details');
     if (topicInput) topicInput.value = t.topic;
     if (detailsInput) detailsInput.value = t.details;
-    
+
     // Auto-select dropdown items if template specifies style/context
     if (t.style) {
         window.currentBlocks['scienceStyle'] = t.style;
@@ -467,7 +467,7 @@ export function showTipsCard() {
 export function renderResultGrid() {
     const box = document.getElementById('result-display');
     if (!box) return;
-    
+
     if (appState.generatedImages.length === 0) {
         box.innerHTML = '<div style="display:flex; height:100%; align-items:center; justify-content:center; color: var(--text-secondary); font-weight: 500; font-size: 1.1rem;">Khu vực hiển thị kết quả (Chưa có ảnh nào)</div>';
         return;
@@ -479,7 +479,7 @@ export function renderResultGrid() {
         }
         return `<div class="result-item" onclick="window.showLightbox('${img.url}', 'image')" style="cursor: pointer;"><img src="${img.url}" alt="AI Gen"></div>`;
     }).join('');
-    
+
     // Add "Đổi 1 chi tiết & so sánh" button at the top of results if we have at least one image
     const lastImg = [...appState.generatedImages].reverse().find(img => img.type === 'image');
     let comparisonBtnHtml = '';
@@ -490,7 +490,7 @@ export function renderResultGrid() {
             </button>
         `;
     }
-    
+
     box.innerHTML = comparisonBtnHtml + '<div class="result-grid">' + imagesHtml + '</div>';
     box.scrollTop = 0;
 }
@@ -503,7 +503,7 @@ export async function generateAction(isImg2Vid) {
     }
 
     let promptText = '';
-    
+
     if (isImg2Vid) {
         promptText = document.getElementById('vid-prompt').value.trim();
         if (!window.uploadedRefImage) {
@@ -532,7 +532,7 @@ export async function generateAction(isImg2Vid) {
     const resultBox = document.getElementById('result-display');
     const initialText = isImg2Vid ? 'Cùng chờ đón video nhé' : 'AI đang sáng tạo...';
     const loadingHtml = `<div style="display:flex;flex-direction:column;align-items:center;gap:16px; padding: 40px 0;"><div class="loading-spinner" style="border: 4px solid rgba(0,0,0,0.1); border-left-color: var(--primary-color); border-radius: 50%; width: 48px; height: 48px; animation: spin 1s linear infinite;"></div><span id="loading-message" style="color:var(--primary-color); font-weight: 500;">${initialText}</span></div>`;
-    
+
     // Inject loading indicator above the grid
     resultBox.innerHTML = loadingHtml + resultBox.innerHTML;
 
@@ -550,7 +550,7 @@ export async function generateAction(isImg2Vid) {
         }, 10000);
         // Store interval/timeout or just let it clear if node is removed
     }, 4500);
-    
+
     try {
         if (isImg2Vid) {
             const bodyPayload = {
@@ -578,14 +578,14 @@ export async function generateAction(isImg2Vid) {
             appState.generatedImages.push(newVid);
             incrementUsageCount('videos');
             saveSession();
-            
+
             // Push to Classroom Gallery as well
             pushToClassGallery(data.url, 'video', promptText);
 
             renderResultGrid();
         } else {
             let finalStr = promptText;
-            
+
             // Backend prompt engineering for Comic Studio
             if (appState.currentModule === 'comic') {
                 const panels = window.currentBlocks['comicPanels'] || '4 panels';
@@ -593,7 +593,7 @@ export async function generateAction(isImg2Vid) {
             }
 
             if (window.uploadedRefImage || appState.chatRefImages.length > 0) finalStr += ', (with reference image styling)';
-            
+
             const bodyPayload = {
                 prompt: finalStr,
                 aspectRatio: window.currentAspectRatio,
@@ -612,7 +612,7 @@ export async function generateAction(isImg2Vid) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(bodyPayload)
             });
-            
+
             const data = await response.json();
             if (data.error) throw new Error(data.error);
 
@@ -623,7 +623,7 @@ export async function generateAction(isImg2Vid) {
                 appState.generatedImages.push(newImg);
                 incrementUsageCount('images');
                 saveSession();
-                
+
                 // Push to Classroom Gallery as well
                 pushToClassGallery(data.url, 'image', promptText);
 
@@ -678,7 +678,7 @@ export function setupChatPaste() {
                         renderPinned();
                     };
                     reader.readAsDataURL(file);
-                    e.preventDefault(); 
+                    e.preventDefault();
                     break;
                 }
             }
@@ -759,9 +759,9 @@ export function setupReferenceUpload() {
 
     function handleFile(file) {
         if (!file.type.startsWith('image/')) return;
-        
+
         // Safety check for face photos
-        if (!confirm("Lưu ý an toàn: Hình ảnh tải lên KHÔNG ĐƯỢC có chứa mặt người thật hoặc trẻ em. Bé đã kiểm tra kỹ chưa? 📷")) {
+        if (!confirm("Lưu ý an toàn: Hình ảnh tải lên KHÔNG ĐƯỢC có chứa mặt người thật hoặc trẻ em. Em đã kiểm tra kỹ chưa? 📷")) {
             fileInput.value = '';
             return;
         }
@@ -809,12 +809,12 @@ export function setupSketchUpload() {
             fileInput.value = '';
             previewContainer.style.display = 'none';
             uploadText.style.display = 'block';
-            
+
             const uploadIcon = zone.querySelector('.sketch-upload-icon');
             const uploadSub = zone.querySelector('.sketch-upload-sub');
             if (uploadIcon) uploadIcon.style.display = 'block';
             if (uploadSub) uploadSub.style.display = 'block';
-            
+
             updateMasterPrompt();
         });
     }
@@ -827,7 +827,7 @@ export function setupSketchUpload() {
             return;
         }
 
-        if (!confirm("Lưu ý an toàn: Hình ảnh tải lên KHÔNG ĐƯỢC có chứa mặt người thật hoặc trẻ em. Bé đã kiểm tra kỹ chưa? 📷")) {
+        if (!confirm("Lưu ý an toàn: Hình ảnh tải lên KHÔNG ĐƯỢC có chứa mặt người thật hoặc trẻ em. Em đã kiểm tra kỹ chưa? 📷")) {
             fileInput.value = '';
             return;
         }
@@ -839,12 +839,12 @@ export function setupSketchUpload() {
                 previewImg.src = jpegDataUrl;
                 previewContainer.style.display = 'block';
                 uploadText.style.display = 'none';
-                
+
                 const uploadIcon = zone.querySelector('.sketch-upload-icon');
                 const uploadSub = zone.querySelector('.sketch-upload-sub');
                 if (uploadIcon) uploadIcon.style.display = 'none';
                 if (uploadSub) uploadSub.style.display = 'none';
-                
+
                 updateMasterPrompt();
             });
         };
@@ -894,7 +894,7 @@ export function setupPromptBuilderLogic(isImg2Vid) {
                 e.stopPropagation();
                 select.querySelectorAll('.option-item').forEach(o => o.classList.remove('selected'));
                 option.classList.add('selected');
-                
+
                 const val = option.getAttribute('data-val');
                 const label = option.querySelector('.option-label').innerText;
                 const category = option.getAttribute('data-category');
@@ -938,7 +938,7 @@ export function setupPromptBuilderLogic(isImg2Vid) {
             input.style.opacity = '1';
             const category = e.target.getAttribute('data-category');
             const val = e.target.value.trim();
-            
+
             if (finalPrompt) {
                 window.currentBlocks[category] = val ? val : null;
                 updateMasterPrompt();
@@ -976,7 +976,7 @@ export function renderPlayground() {
 
     let dropdownsHtml = '';
     const fields = MODULE_FIELDS[appState.currentModule] || MODULE_FIELDS['comic'];
-    
+
     // Quick-select template buttons for Fun Science Lab (Xưởng Khoa Học Vui)
     if (appState.currentModule === 'science') {
         let templatesHtml = '';
@@ -1008,7 +1008,7 @@ export function renderPlayground() {
                         <div class="sketch-upload-icon" style="font-size: 1.5rem; margin-bottom: 4px;">📝</div>
                         <div class="sketch-upload-text" id="sketch-upload-text" style="font-size: 0.82rem; color: var(--primary-blue); font-weight: 600;">${field.placeholder}</div>
                         <div class="sketch-upload-sub" style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">Hỗ trợ ảnh JPG, PNG dưới 20MB</div>
-                        
+
                         <!-- Sketch image preview -->
                         <div class="sketch-preview-container" id="sketch-preview-container" style="display: none; margin-top: 8px; position: relative; width: 100%; max-height: 150px; border-radius: 8px; overflow: hidden; border: 1px solid var(--panel-border);">
                             <img id="sketch-preview-img" src="" alt="Sketch Preview" style="max-width: 100%; max-height: 150px; object-fit: contain; display: block; margin: 0 auto;">
@@ -1032,22 +1032,22 @@ export function renderPlayground() {
         const category = field.category;
         const chipsData = CHIP_POOL[category];
         if (!chipsData) return;
-        
+
         const noneItem = chipsData.find(c => c.id === 'none');
         const normalItems = chipsData.filter(c => c.id !== 'none');
-        
+
         let optionsList = '';
         if (noneItem) {
             optionsList += `<div class="option-item" data-category="${category}" data-val="${noneItem.id}"><span style="margin-right: 8px;">${getOptionIcon(noneItem.id)}</span><span class="option-label">${noneItem.label}</span></div>`;
         }
-        
-        const hasCustomInput = category !== 'comicPanels' && category !== 'gender' && category !== 'country' && category !== 'age' && category !== 'characterStyle' && category !== 'scienceStyle' && category !== 'scienceContext' && category !== 'infoLayout' && category !== 'infoStyle';
-        
+
+        const hasCustomInput = true;
+
         if (hasCustomInput) {
             optionsList += `<div class="option-item" data-category="${category}" data-val="custom"><span style="margin-right: 8px;">✏️</span><span class="option-label" style="font-weight: 600; color: var(--primary-color);">Ý tưởng tự viết...</span></div>`;
         }
-        
-        optionsList += normalItems.map(c => 
+
+        optionsList += normalItems.map(c =>
             `<div class="option-item" data-category="${category}" data-val="${c.id}"><span style="margin-right: 8px;">${getOptionIcon(c.id)}</span><span class="option-label">${c.label}</span></div>`
         ).join('');
 
@@ -1117,13 +1117,13 @@ export function renderPlayground() {
                     <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: space-between;">
                         <span>✍️ Câu lệnh của em đang thành hình…</span>
                     </h2>
-                    
+
                     <div class="prompt-formula-badge" id="prompt-formula-badge" style="background: rgba(183, 233, 49, 0.12); border: 1px solid rgba(183, 233, 49, 0.25); padding: 8px 12px; border-radius: 8px; font-size: 0.82rem; color: #456100; font-weight: 600; margin-top: 6px;"></div>
 
                     <div class="live-prompt-box" id="live-prompt-preview" style="margin-top: 8px;">
                         <span style="color:var(--text-muted)">Bắt đầu nhập liệu để thấy câu lệnh hình thành...</span>
                     </div>
-                    
+
                     <!-- Inline Settings & Generate -->
                     <div class="prompt-board-settings">
                         <!-- Custom Select Aspect Ratio -->
@@ -1142,7 +1142,7 @@ export function renderPlayground() {
                         <!-- Inline Upload Trigger -->
                         <div class="inline-upload-trigger" id="ref-upload-zone" style="${appState.currentModule === 'sketch' ? 'display: none;' : ''}">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                            <span style="font-size: 0.85rem;">Ảnh tham khảo (Tùy chọn)</span>
+                            <span style="font-size: 0.85rem;">Tải lên hoặc dán ảnh (Ctrl+V) (Tùy chọn)</span>
                             <input type="file" id="ref-file" hidden accept="image/*">
                         </div>
 
@@ -1165,7 +1165,7 @@ export function renderPlayground() {
                     <div class="edu-tip-item"><span class="edu-bullet style"></span> <span><strong>Vẽ theo kiểu nào? (Phong cách):</strong> Tranh vẽ màu sáp, hoạt hình 3D, truyện tranh Manga.</span></div>
                     <div class="edu-tip-item"><span class="edu-bullet context"></span> <span><strong>Ở đâu? Lúc nào? (Bối cảnh):</strong> Ngoài vũ trụ, trong phòng thí nghiệm, hẻm nhỏ.</span></div>
                     <div class="edu-tip-item"><span class="edu-bullet vibe"></span> <span><strong>Cảm giác thế nào? (Cảm xúc):</strong> Bầu không khí mộng mơ, vui tươi, huyền bí.</span></div>
-                    
+
                     <!-- AI Literacy fact card -->
                     <div class="ai-literacy-card" style="margin-top: 16px; background: rgba(0, 103, 217, 0.08); border: 1px dashed var(--primary-blue); padding: 12px; border-radius: 12px; color: var(--primary-blue); font-weight: 500; font-size: 0.85rem; line-height: 1.4;">
                         <strong>Em có biết? 🧠</strong> <span id="random-ai-fact">${randomFact}</span>
@@ -1178,7 +1178,7 @@ export function renderPlayground() {
                     <div class="result-display" id="result-display" style="flex: 1; border: none; box-shadow: none; padding: 0; min-height: unset; background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; display: flex; flex-direction: column;"></div>
                 </div>
             </div>
-            
+
             <!-- Hidden containers for code compatibility -->
             <textarea id="final-prompt" style="display: none;"></textarea>
             <div class="pinned-refs" id="pinned-refs-container" style="display: none;"></div>
@@ -1190,7 +1190,7 @@ export function renderPlayground() {
     setupSketchUpload();
     setupChatPaste();
     renderResultGrid();
-    
+
     // Always default to showing tips card
     showTipsCard();
 
@@ -1198,8 +1198,76 @@ export function renderPlayground() {
     updateMasterPrompt();
 }
 
+export function handleGlobalPaste(e) {
+    if (appState.view !== 'video' && appState.view !== 'studio') return;
+
+    if (e.clipboardData && e.clipboardData.items) {
+        for (let i = 0; i < e.clipboardData.items.length; i++) {
+            if (e.clipboardData.items[i].type.indexOf('image') !== -1) {
+                const file = e.clipboardData.items[i].getAsFile();
+
+                // Size check (20MB limit)
+                if (file.size > 20 * 1024 * 1024) {
+                    alert('Kích thước ảnh vượt quá 20MB. Vui lòng chọn ảnh nhỏ hơn!');
+                    return;
+                }
+
+                // Safety check
+                if (!confirm("Lưu ý an toàn: Hình ảnh tải lên KHÔNG ĐƯỢC có chứa mặt người thật hoặc trẻ em. Em đã kiểm tra kỹ chưa? 📷")) {
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    convertToJpeg(ev.target.result, (jpegDataUrl) => {
+                        window.uploadedRefImage = jpegDataUrl;
+
+                        if (appState.view === 'video') {
+                            const previewImg = document.getElementById('ref-preview-img');
+                            const uploadZone = document.getElementById('ref-upload-zone');
+                            const previewContainer = document.getElementById('ref-preview-container');
+                            if (previewImg) previewImg.src = window.uploadedRefImage;
+                            if (uploadZone) uploadZone.style.display = 'none';
+                            if (previewContainer) previewContainer.style.display = 'block';
+                        } else if (appState.view === 'studio') {
+                            if (appState.currentModule === 'sketch') {
+                                const previewImg = document.getElementById('sketch-preview-img');
+                                const uploadZone = document.getElementById('sketch-upload-zone');
+                                const previewContainer = document.getElementById('sketch-preview-container');
+                                const uploadText = document.getElementById('sketch-upload-text');
+
+                                if (previewImg) previewImg.src = window.uploadedRefImage;
+                                if (uploadZone) {
+                                    const uploadIcon = uploadZone.querySelector('.sketch-upload-icon');
+                                    const uploadSub = uploadZone.querySelector('.sketch-upload-sub');
+                                    if (uploadIcon) uploadIcon.style.display = 'none';
+                                    if (uploadSub) uploadSub.style.display = 'none';
+                                }
+                                if (uploadText) uploadText.style.display = 'none';
+                                if (previewContainer) previewContainer.style.display = 'block';
+                            } else {
+                                const previewImg = document.getElementById('ref-preview-img');
+                                const uploadZone = document.getElementById('ref-upload-zone');
+                                const previewContainer = document.getElementById('ref-preview-container');
+                                if (previewImg) previewImg.src = window.uploadedRefImage;
+                                if (uploadZone) uploadZone.style.display = 'none';
+                                if (previewContainer) previewContainer.style.display = 'block';
+                            }
+                            updateMasterPrompt();
+                        }
+                    });
+                };
+                reader.readAsDataURL(file);
+                e.preventDefault();
+                break;
+            }
+        }
+    }
+}
+
 // Bind functions to window
 window.updateMasterPrompt = updateMasterPrompt;
 window.applyScienceTemplate = applyScienceTemplate;
 window.renderPlayground = renderPlayground;
 window.renderResultGrid = renderResultGrid;
+window.handleGlobalPaste = handleGlobalPaste;
