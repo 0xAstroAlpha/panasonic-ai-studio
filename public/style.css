@@ -2100,3 +2100,217 @@ body.landing-mode .app-container {
     backdrop-filter: blur(2px);
     pointer-events: none;
 }
+
+@media (max-width: 1024px) {
+    body.landing-mode {
+        overflow-x: hidden;
+    }
+
+    .landing-view {
+        overflow-x: hidden;
+    }
+
+    .hero-section {
+        overflow: hidden !important;
+        padding: 48px 20px 64px !important;
+    }
+
+    .hero-container {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 36px !important;
+        max-width: 760px !important;
+    }
+
+    .hero-text-col {
+        width: 100% !important;
+        max-width: 680px !important;
+        text-align: center !important;
+    }
+
+    .hero-title,
+    .hero-title span {
+        white-space: normal !important;
+    }
+
+    .hero-title {
+        font-size: 3.1rem !important;
+        line-height: 1.08 !important;
+        letter-spacing: 0 !important;
+    }
+
+    .hero-subtitle {
+        max-width: 560px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    .hero-actions {
+        justify-content: center !important;
+    }
+
+    .hero-features {
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        width: fit-content !important;
+        max-width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    .hero-visuals-col {
+        width: 100% !important;
+        max-width: 700px !important;
+        height: 560px !important;
+    }
+
+    .fc-1 { right: 26px !important; }
+    .fc-2 { left: 24px !important; }
+    .fc-3 { right: 42px !important; }
+
+    .modules-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .hero-section {
+        padding: 32px 16px 48px !important;
+    }
+
+    .hero-section::before {
+        width: 420px !important;
+        height: 420px !important;
+        top: -140px !important;
+        left: -180px !important;
+    }
+
+    .hero-section::after {
+        width: 520px !important;
+        height: 520px !important;
+        right: -260px !important;
+        bottom: -160px !important;
+    }
+
+    .hero-logos-pill {
+        max-width: 100% !important;
+        padding: 10px 16px !important;
+        gap: 12px !important;
+        justify-content: center !important;
+    }
+
+    .logo-panasonic {
+        width: 146px !important;
+        height: auto !important;
+    }
+
+    .logo-vidtory {
+        width: 92px !important;
+        height: auto !important;
+    }
+
+    .logo-divider {
+        height: 34px !important;
+        margin: 0 4px !important;
+    }
+
+    .hero-title {
+        font-size: 2.35rem !important;
+        margin-bottom: 18px !important;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem !important;
+        line-height: 1.55 !important;
+        margin-bottom: 24px !important;
+    }
+
+    .btn-lime {
+        height: 52px !important;
+        padding: 0 24px !important;
+        font-size: 1rem !important;
+    }
+
+    .hero-features {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+        width: 100% !important;
+        padding: 18px 20px !important;
+        border-radius: 24px !important;
+        margin-top: 32px !important;
+    }
+
+    .feature-item {
+        justify-content: flex-start !important;
+        text-align: left !important;
+    }
+
+    .hero-visuals-col {
+        height: auto !important;
+        max-width: 360px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+        margin-top: 8px !important;
+    }
+
+    .floating-card,
+    .fc-1,
+    .fc-2,
+    .fc-3 {
+        position: relative !important;
+        inset: auto !important;
+        top: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        left: auto !important;
+        width: 100% !important;
+        transform: none !important;
+        animation: none !important;
+        z-index: 2 !important;
+    }
+
+    .floating-card .fc-img-wrapper {
+        height: 176px !important;
+    }
+
+    .floating-card .fc-info {
+        padding: 12px 8px !important;
+    }
+
+    .floating-card .fc-icon {
+        width: 42px !important;
+        height: 42px !important;
+    }
+
+    .floating-card h4 {
+        font-size: 1rem !important;
+    }
+
+    .adventure-section {
+        padding: 48px 16px !important;
+    }
+
+    .section-title {
+        font-size: 2.1rem !important;
+        text-align: center !important;
+    }
+
+    .section-desc {
+        text-align: center !important;
+    }
+
+    .modules-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .feature-card {
+        height: 360px !important;
+        padding: 24px !important;
+    }
+
+    .feature-card h3 {
+        font-size: 1.65rem !important;
+    }
+}

@@ -6,6 +6,7 @@ node_modules/
 
 # Test output
 test-results/
+test-output/
 playwright-report/
 blob-report/
 playwright/.cache/
@@ -16,4 +17,3 @@ playwright/.cache/
 # Next.js build directory
 .next/
 next-env.d.ts
-

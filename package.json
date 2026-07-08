@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test:image": "node scripts/test-image-generation.mjs"
   },
   "keywords": [],
   "author": "",
