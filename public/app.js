@@ -76,11 +76,11 @@ function checkOnboarding() {
 function renderLanding() {
     document.body.classList.add('landing-mode');
     const landingModules = [
-        { id: 'comic', name: 'Xưởng Truyện Tranh', role: ['Họa sĩ truyện tranh', 'Nhà thiết kế đồ họa', 'Storyteller'], style: 'card-blue', img: 'images/floating_ai_comic.png' },
-        { id: 'character', name: 'Tạo Nhân Vật', role: ['Thiết kế Mascot', 'Hoạt họa viên', 'Nhà sáng tạo nhân vật'], style: 'card-purple', img: 'images/floating_ai_character.png' },
-        { id: 'science', name: 'Xưởng Khoa Học Vui', role: ['Giáo viên khoa học', 'Nhà nghiên cứu', 'Truyền thông khoa học'], style: 'card-green', img: 'images/hero_science.png' },
-        { id: 'sketch', name: 'Vẽ tranh cùng AI', role: ['Họa sĩ phác thảo', 'Minh họa viên', 'Thiết kế mỹ thuật'], style: 'card-teal', img: 'images/hero_art.png' },
-        { id: 'infographic', name: 'Sáng tạo Infographic', role: ['Nhà giáo dục', 'Báo chí số', 'Thiết kế thông tin'], style: 'card-blue', img: 'images/hero_infographic.png' }
+        { id: 'comic', name: 'Xưởng Truyện Tranh', role: ['Họa sĩ truyện tranh', 'Nhà thiết kế đồ họa', 'Storyteller'], style: 'card-blue', img: 'images/floating_ai_comic_vn.jpg' },
+        { id: 'character', name: 'Tạo Nhân Vật', role: ['Thiết kế Mascot', 'Hoạt họa viên', 'Nhà sáng tạo nhân vật'], style: 'card-purple', img: 'images/floating_ai_character_vn.jpg' },
+        { id: 'science', name: 'Xưởng Khoa Học Vui', role: ['Giáo viên khoa học', 'Nhà nghiên cứu', 'Truyền thông khoa học'], style: 'card-green', img: 'images/hero_science_vn.jpg' },
+        { id: 'sketch', name: 'Vẽ tranh cùng AI', role: ['Họa sĩ phác thảo', 'Minh họa viên', 'Thiết kế mỹ thuật'], style: 'card-teal', img: 'images/hero_art_vn.jpg' },
+        { id: 'infographic', name: 'Sáng tạo Infographic', role: ['Nhà giáo dục', 'Báo chí số', 'Thiết kế thông tin'], style: 'card-blue', img: 'images/hero_infographic_vn.jpg' }
     ];
 
     const gridHtml = landingModules.map((m, index) => `
@@ -144,21 +144,21 @@ function renderLanding() {
                     </div>
                     <div class="hero-visuals-col reveal delay-2">
                         <div class="floating-card fc-1">
-                            <div class="fc-img-wrapper"><img src="images/floating_ai_comic.png" alt="Comic"></div>
+                            <div class="fc-img-wrapper"><img src="images/floating_ai_comic_vn.jpg" alt="Comic"></div>
                             <div class="fc-info">
                                 <div class="fc-icon" style="background:#dcfce7; color:#16a34a;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
                                 <div><h4>Xưởng Truyện Tranh</h4><p>Kể chuyện bằng tranh ảnh</p></div>
                             </div>
                         </div>
                         <div class="floating-card fc-2">
-                            <div class="fc-img-wrapper"><img src="images/floating_ai_character.png" alt="Character"></div>
+                            <div class="fc-img-wrapper"><img src="images/floating_ai_character_vn.jpg" alt="Character"></div>
                             <div class="fc-info">
                                 <div class="fc-icon" style="background:#dcfce7; color:#16a34a;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4M8 16h8"/></svg></div>
                                 <div><h4>Tạo Nhân Vật</h4><p>Thiết kế Mascot dễ thương</p></div>
                             </div>
                         </div>
                         <div class="floating-card fc-3">
-                            <div class="fc-img-wrapper"><img src="images/hero_science.png" alt="Science"></div>
+                            <div class="fc-img-wrapper"><img src="images/hero_science_vn.jpg" alt="Science"></div>
                             <div class="fc-info">
                                 <div class="fc-icon" style="background:#dcfce7; color:#16a34a;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21h6M12 17v4M12 17a4 4 0 0 0 4-4V7a4 4 0 0 0-8 0v6a4 4 0 0 0 4 4z"/></svg></div>
                                 <div><h4>Khoa Học Vui</h4><p>Minh họa hiện tượng lý thú</p></div>
