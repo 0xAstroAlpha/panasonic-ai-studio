@@ -433,7 +433,7 @@ function renderMainLayout() {
                             currentVidLimit: vidLimit
                         })}
                     </div>
-                    <button class="nav-item sidebar-logout" onclick="window.handleLogout()">
+                    <button class="nav-item sidebar-logout" onclick="window.handleLogout()" aria-label="Đăng xuất" title="Đăng xuất">
                         <span class="icon">${SVG_ICONS.logout}</span>
                         <span class="nav-item-text">Đăng xuất</span>
                     </button>
