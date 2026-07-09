@@ -31,7 +31,7 @@ export const CREDENTIALS = {
 };
 
 export const LIMITS = {
-    student: { images: 20, videos: 4 },
+    student: { images: 10, videos: 2 },
     teacher: { images: 100, videos: 20 }
 };
 

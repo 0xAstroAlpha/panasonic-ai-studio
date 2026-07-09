@@ -363,47 +363,53 @@ function renderMainLayout() {
     const imgLimit = LIMITS[role].images;
     const vidCount = getUsageCount('videos');
     const vidLimit = LIMITS[role].videos;
+    const renderSidebarUser = ({ currentRoleName, currentImgCount, currentImgLimit, currentVidCount, currentVidLimit }) => `
+        <div class="sidebar-profile">
+            <img src="${appState.avatar}" alt="Avatar">
+            <div class="sidebar-profile-copy">
+                <h3>${appState.nickname}</h3>
+                <span class="studio-badge sidebar-role-badge">${currentRoleName}</span>
+            </div>
+        </div>
+        <div class="sidebar-quota">
+            <div class="quota-item">
+                <div class="quota-row">
+                    <span>📷 Ảnh đã vẽ</span>
+                    <span>${currentImgCount}/${currentImgLimit}</span>
+                </div>
+                <div class="quota-bar-track">
+                    <div class="quota-bar-fill fill-images" style="width: ${Math.min(100, (currentImgCount/currentImgLimit)*100)}%; background: ${getQuotaColor(currentImgCount, currentImgLimit)};"></div>
+                </div>
+            </div>
+            <div class="quota-item">
+                <div class="quota-row">
+                    <span>🎬 Phim ngắn</span>
+                    <span>${currentVidCount}/${currentVidLimit}</span>
+                </div>
+                <div class="quota-bar-track">
+                    <div class="quota-bar-fill fill-videos" style="width: ${Math.min(100, (currentVidCount/currentVidLimit)*100)}%; background: ${getQuotaColor(currentVidCount, currentVidLimit)};"></div>
+                </div>
+            </div>
+            <div class="quota-advice">
+                ${getQuotaAdvice(currentImgCount, currentImgLimit, currentVidCount, currentVidLimit)}
+            </div>
+        </div>
+    `;
 
     appContainer.innerHTML = `
         <div class="main-layout">
             <aside class="sidebar glass-panel" id="main-sidebar">
-                <div class="sidebar-logos" style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; padding: 8px 0 12px 0; border-bottom: 1px solid var(--panel-border);">
-                    <img src="images/Panasonic.png" alt="Panasonic Logo" style="height: 40px; object-fit: contain;">
-                    <span style="font-size: 1.2rem; color: rgba(19, 32, 58, 0.2); font-weight: bold;">|</span>
-                    <img src="images/vidtory_logo.png" alt="Vidtory Logo" style="height: 22px; object-fit: contain;">
-                </div>
-                <div class="sidebar-user">
-                    <img src="${appState.avatar}" alt="Avatar">
-                    <h3 style="margin-bottom:2px;">${appState.nickname}</h3>
-                    <span class="studio-badge" style="margin-left:0; margin-bottom:4px; background:var(--primary-blue); font-size:11px;">${roleName}</span>
-                    <div class="quota-container" style="width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
-                        <div class="quota-item">
-                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2px;">
-                                <span>📷 Ảnh đã vẽ</span>
-                                <span style="font-weight: 600;">${imgCount}/${imgLimit}</span>
-                            </div>
-                            <div class="quota-bar-track" style="height: 6px; background: rgba(0,0,0,0.06); border-radius: 3px; overflow: hidden; width: 100%;">
-                                <div class="quota-bar-fill fill-images" style="height: 100%; width: ${Math.min(100, (imgCount/imgLimit)*100)}%; background: ${getQuotaColor(imgCount, imgLimit)}; border-radius: 3px; transition: width 0.3s;"></div>
-                            </div>
-                        </div>
-                        <div class="quota-item">
-                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2px;">
-                                <span>🎬 Phim ngắn</span>
-                                <span style="font-weight: 600;">${vidCount}/${vidLimit}</span>
-                            </div>
-                            <div class="quota-bar-track" style="height: 6px; background: rgba(0,0,0,0.06); border-radius: 3px; overflow: hidden; width: 100%;">
-                                <div class="quota-bar-fill fill-videos" style="height: 100%; width: ${Math.min(100, (vidCount/vidLimit)*100)}%; background: ${getQuotaColor(vidCount, vidLimit)}; border-radius: 3px; transition: width 0.3s;"></div>
-                            </div>
-                        </div>
-                        <div class="quota-advice" style="font-size: 0.75rem; color: var(--text-muted); font-style: italic; text-align: center; margin-top: 4px;">
-                            ${getQuotaAdvice(imgCount, imgLimit, vidCount, vidLimit)}
-                        </div>
+                <div class="sidebar-header">
+                    <div class="sidebar-logos">
+                        <img src="images/Panasonic.png" alt="Panasonic Logo" class="sidebar-logo-panasonic">
+                        <span class="sidebar-logo-divider"></span>
+                        <img src="images/vidtory_logo.png" alt="Vidtory Logo" class="sidebar-logo-vidtory">
                     </div>
                 </div>
-                <nav class="sidebar-nav">
+                <nav class="sidebar-menu">
                     <div class="sidebar-category-header">Studio Sáng Tạo</div>
                     ${navItems}
-                    <div class="sidebar-category-header" style="margin-top: 8px;">Khác</div>
+                    <div class="sidebar-category-header sidebar-category-spaced">Công cụ</div>
                     <div class="nav-item ${appState.view === 'video' ? 'active' : ''}" data-view="video">
                         <span class="icon">${SVG_ICONS.video}</span><span class="nav-item-text">Làm Phim Ngắn</span>
                     </div>
@@ -411,14 +417,23 @@ function renderMainLayout() {
                         <span class="icon">${SVG_ICONS.gallery}</span><span class="nav-item-text">Thư viện</span>
                     </div>
                     ${role === 'teacher' ? `
-                    <div class="sidebar-category-header" style="margin-top: 8px;">Giáo viên</div>
+                    <div class="sidebar-category-header sidebar-category-spaced">Giáo viên</div>
                     <div class="nav-item ${appState.view === 'teacher' ? 'active' : ''}" data-view="teacher">
                         <span class="icon">${SVG_ICONS.teacher}</span><span class="nav-item-text">Quản lý Lớp học</span>
                     </div>
                     ` : ''}
                 </nav>
-                <div style="margin-top: auto; padding: 16px;">
-                    <button class="nav-item" onclick="window.handleLogout()" style="width: 100%; border: none; background: rgba(239, 68, 68, 0.1); color: #ef4444; justify-content: flex-start; cursor: pointer;">
+                <div class="sidebar-footer">
+                    <div class="sidebar-user">
+                        ${renderSidebarUser({
+                            currentRoleName: roleName,
+                            currentImgCount: imgCount,
+                            currentImgLimit: imgLimit,
+                            currentVidCount: vidCount,
+                            currentVidLimit: vidLimit
+                        })}
+                    </div>
+                    <button class="nav-item sidebar-logout" onclick="window.handleLogout()">
                         <span class="icon">${SVG_ICONS.logout}</span>
                         <span class="nav-item-text">Đăng xuất</span>
                     </button>
@@ -438,34 +453,13 @@ function renderMainLayout() {
         const currentVidCount = getUsageCount('videos');
         const currentVidLimit = LIMITS[currentRole].videos;
 
-        sidebarUser.innerHTML = `
-            <img src="${appState.avatar}" alt="Avatar">
-            <h3 style="margin-bottom:4px;">${appState.nickname}</h3>
-            <span class="studio-badge" style="margin-left:0; margin-bottom:8px; background:var(--primary-blue); font-size:11px;">${currentRoleName}</span>
-            <div class="quota-container" style="width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
-                <div class="quota-item">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">
-                        <span>📷 Ảnh đã vẽ</span>
-                        <span style="font-weight: 600;">${currentImgCount}/${currentImgLimit}</span>
-                    </div>
-                    <div class="quota-bar-track" style="height: 6px; background: rgba(0,0,0,0.06); border-radius: 3px; overflow: hidden; width: 100%;">
-                        <div class="quota-bar-fill fill-images" style="height: 100%; width: ${Math.min(100, (currentImgCount/currentImgLimit)*100)}%; background: ${getQuotaColor(currentImgCount, currentImgLimit)}; border-radius: 3px; transition: width 0.3s;"></div>
-                    </div>
-                </div>
-                <div class="quota-item">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">
-                        <span>🎬 Phim ngắn</span>
-                        <span style="font-weight: 600;">${currentVidCount}/${currentVidLimit}</span>
-                    </div>
-                    <div class="quota-bar-track" style="height: 6px; background: rgba(0,0,0,0.06); border-radius: 3px; overflow: hidden; width: 100%;">
-                        <div class="quota-bar-fill fill-videos" style="height: 100%; width: ${Math.min(100, (currentVidCount/currentVidLimit)*100)}%; background: ${getQuotaColor(currentVidCount, currentVidLimit)}; border-radius: 3px; transition: width 0.3s;"></div>
-                    </div>
-                </div>
-                <div class="quota-advice" style="font-size: 0.75rem; color: var(--text-muted); font-style: italic; text-align: center; margin-top: 4px;">
-                    ${getQuotaAdvice(currentImgCount, currentImgLimit, currentVidCount, currentVidLimit)}
-                </div>
-            </div>
-        `;
+        sidebarUser.innerHTML = renderSidebarUser({
+            currentRoleName,
+            currentImgCount,
+            currentImgLimit,
+            currentVidCount,
+            currentVidLimit
+        });
     };
 
     document.querySelectorAll('.sidebar .nav-item').forEach(item => {
