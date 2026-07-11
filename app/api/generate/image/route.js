@@ -1,6 +1,7 @@
 import { VidtoryAI } from '@vidtory/ai-sdk';
 import { NextResponse } from 'next/server';
 import { logGeneration } from '../../../../lib/history';
+import { checkServerPromptSafety } from '../../../../lib/promptSafety';
 
 const ai = new VidtoryAI({
     apiKey: process.env.VIDTORY_API_KEY
@@ -10,6 +11,10 @@ export async function POST(request) {
     try {
         const body = await request.json();
         const { prompt, aspectRatio, refImageBase64, refImageUrl: directUrl, username, nickname, studio } = body;
+        const safety = checkServerPromptSafety(prompt);
+        if (!safety.ok) {
+            return NextResponse.json({ error: safety.message, reason: safety.reason }, { status: 400 });
+        }
         
         let refImageUrl = directUrl || null;
         if (refImageBase64) {
@@ -23,7 +28,15 @@ export async function POST(request) {
             refImageUrl = media.url;
         }
 
-        const params = { prompt };
+        // Randomly pick between the two image models to distribute load
+        const IMAGE_MODELS = [
+            'gemini-3.1-flash-image-preview',
+            'gemini-3.1-flash-image-preview-aistudio',
+        ];
+        const selectedModel = IMAGE_MODELS[Math.floor(Math.random() * IMAGE_MODELS.length)];
+        console.log(`[generate/image] Using model: ${selectedModel}`);
+
+        const params = { prompt, modelId: selectedModel };
         if (refImageUrl) {
             params.refImageUrl = refImageUrl;
         }
