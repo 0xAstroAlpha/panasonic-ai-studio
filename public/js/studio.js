@@ -457,6 +457,77 @@ export function showResultsCard() {
     if (resultsCard) resultsCard.style.display = 'flex';
 }
 
+// ── Rate-limit toast ──────────────────────────────────────────────────────────
+function showRateLimitToast(secondsLeft) {
+    // Remove any existing toast first
+    const existing = document.getElementById('rl-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = 'rl-toast';
+    toast.innerHTML = `
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+            <span style="font-size:1.6rem;line-height:1;">⏳</span>
+            <div>
+                <div style="font-weight:700;font-size:1rem;margin-bottom:4px;">Bạn đang tạo ảnh quá nhanh!</div>
+                <div style="font-size:0.88rem;opacity:0.92;line-height:1.5;">Hãy kiểm tra kĩ câu lệnh trước khi tạo ảnh mới nhé 😊<br>Chờ thêm <strong>${secondsLeft}s</strong> nữa để tạo ảnh tiếp theo.</div>
+            </div>
+        </div>
+    `;
+    Object.assign(toast.style, {
+        position: 'fixed',
+        top: '24px',
+        left: '50%',
+        transform: 'translateX(-50%) translateY(-80px)',
+        background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
+        color: '#fff',
+        padding: '16px 22px',
+        borderRadius: '16px',
+        boxShadow: '0 8px 32px rgba(30,64,175,0.35)',
+        zIndex: '99999',
+        maxWidth: '360px',
+        width: 'calc(100vw - 48px)',
+        transition: 'transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s ease',
+        opacity: '0',
+        pointerEvents: 'none',
+    });
+    document.body.appendChild(toast);
+
+    // Animate in
+    requestAnimationFrame(() => {
+        toast.style.transform = 'translateX(-50%) translateY(0)';
+        toast.style.opacity = '1';
+    });
+
+    // Animate out after 4s
+    setTimeout(() => {
+        toast.style.transform = 'translateX(-50%) translateY(-80px)';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 400);
+    }, 4000);
+}
+
+const IMAGE_RATE_LIMIT_MS = 60 * 1000; // 1 minute
+
+function checkImageRateLimit(username) {
+    const key = `img_last_gen_${username || 'guest'}`;
+    const lastTs = parseInt(localStorage.getItem(key) || '0', 10);
+    const now = Date.now();
+    const elapsed = now - lastTs;
+    if (elapsed < IMAGE_RATE_LIMIT_MS) {
+        const secondsLeft = Math.ceil((IMAGE_RATE_LIMIT_MS - elapsed) / 1000);
+        showRateLimitToast(secondsLeft);
+        return false; // blocked
+    }
+    return true; // allowed
+}
+
+function recordImageGeneration(username) {
+    const key = `img_last_gen_${username || 'guest'}`;
+    localStorage.setItem(key, Date.now().toString());
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 export function showTipsCard() {
     const tipsCard = document.getElementById('edu-tips-card');
     const resultsCard = document.getElementById('result-display-card');
@@ -500,6 +571,8 @@ export async function generateAction(isImg2Vid) {
         if (!checkLimits('videos')) return;
     } else {
         if (!checkLimits('images')) return;
+        // Rate-limit: max 1 image per minute per user
+        if (!checkImageRateLimit(appState.username)) return;
     }
 
     let promptText = '';
@@ -615,6 +688,9 @@ export async function generateAction(isImg2Vid) {
 
             const data = await response.json();
             if (data.error) throw new Error(data.error);
+
+            // Record timestamp only after a successful generation
+            recordImageGeneration(appState.username);
 
             // Preload image
             const img = new Image();
