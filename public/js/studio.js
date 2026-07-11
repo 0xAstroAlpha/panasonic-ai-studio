@@ -573,6 +573,8 @@ export async function generateAction(isImg2Vid) {
         if (!checkLimits('images')) return;
         // Rate-limit: max 1 image per minute per user
         if (!checkImageRateLimit(appState.username)) return;
+        // Lock immediately on click — trước khi gọi API — để chặn spam
+        recordImageGeneration(appState.username);
     }
 
     let promptText = '';
@@ -688,9 +690,6 @@ export async function generateAction(isImg2Vid) {
 
             const data = await response.json();
             if (data.error) throw new Error(data.error);
-
-            // Record timestamp only after a successful generation
-            recordImageGeneration(appState.username);
 
             // Preload image
             const img = new Image();
