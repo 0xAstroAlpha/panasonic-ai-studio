@@ -16,18 +16,12 @@ export const appState = {
 };
 
 export const CREDENTIALS = {
-    // Teachers
-    'giaovien1': { pass: 'risupia123', role: 'teacher' },
-    'giaovien2': { pass: 'risupia123', role: 'teacher' },
-    'teacher1': { pass: 'risupia123', role: 'teacher' },
-    'teacher2': { pass: 'risupia123', role: 'teacher' },
+    // Teacher
+    'giaovien': { pass: 'panasonic2026', role: 'teacher' },
     // Students
     'hocsinh1': { pass: 'risupia123', role: 'student' },
     'hocsinh2': { pass: 'risupia123', role: 'student' },
-    'hocsinh3': { pass: 'risupia123', role: 'student' },
-    'student1': { pass: 'risupia123', role: 'student' },
-    'student2': { pass: 'risupia123', role: 'student' },
-    'student3': { pass: 'risupia123', role: 'student' }
+    'hocsinh3': { pass: 'risupia123', role: 'student' }
 };
 
 export const LIMITS = {

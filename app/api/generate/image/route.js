@@ -7,6 +7,9 @@ const ai = new VidtoryAI({
     apiKey: process.env.VIDTORY_API_KEY
 });
 
+// Failover chain: primary models (weighted random) → fallback
+const IMAGE_FALLBACK_MODEL = 'google_image_gen_banana_2';
+
 export async function POST(request) {
     try {
         const body = await request.json();
@@ -29,24 +32,36 @@ export async function POST(request) {
         }
 
         // Weighted random: 70% aistudio, 30% original
-        const selectedModel = Math.random() < 0.7
+        const primaryModel = Math.random() < 0.7
             ? 'gemini-3.1-flash-image-preview-aistudio'
             : 'gemini-3.1-flash-image-preview';
-        console.log(`[generate/image] Using model: ${selectedModel}`);
 
-        const params = { prompt, modelId: selectedModel };
+        const params = { prompt };
         if (refImageUrl) {
             params.refImageUrl = refImageUrl;
         }
-        
         if (aspectRatio) {
             if (aspectRatio === '--ar 16:9') params.aspectRatio = 'IMAGE_ASPECT_RATIO_LANDSCAPE';
             else if (aspectRatio === '--ar 9:16') params.aspectRatio = 'IMAGE_ASPECT_RATIO_PORTRAIT';
             else params.aspectRatio = 'IMAGE_ASPECT_RATIO_SQUARE';
         }
 
-        const response = await ai.models.generateImage(params);
-        
+        let response;
+        let usedModel = primaryModel;
+
+        // --- Primary attempt ---
+        try {
+            console.log(`[generate/image] Trying primary model: ${primaryModel}`);
+            response = await ai.models.generateImage({ ...params, modelId: primaryModel });
+        } catch (primaryErr) {
+            // --- Failover to google_image_gen_banana_2 ---
+            console.warn(`[generate/image] Primary model "${primaryModel}" failed: ${primaryErr?.message}. Failing over to ${IMAGE_FALLBACK_MODEL}.`);
+            usedModel = IMAGE_FALLBACK_MODEL;
+            response = await ai.models.generateImage({ ...params, modelId: IMAGE_FALLBACK_MODEL });
+        }
+
+        console.log(`[generate/image] Success with model: ${usedModel}`);
+
         try {
             logGeneration({
                 username,
@@ -63,7 +78,7 @@ export async function POST(request) {
 
         return NextResponse.json({ url: response.result });
     } catch (error) {
-        console.error('Error generating image:', error);
-        return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+        console.error('[generate/image] Unhandled error:', error);
+        return NextResponse.json({ error: 'Hệ thống đang bận, các em vui lòng thử lại sau 5 phút nhé! 🎨' }, { status: 500 });
     }
 }
