@@ -28,12 +28,10 @@ export async function POST(request) {
             refImageUrl = media.url;
         }
 
-        // Randomly pick between the two image models to distribute load
-        const IMAGE_MODELS = [
-            'gemini-3.1-flash-image-preview',
-            'gemini-3.1-flash-image-preview-aistudio',
-        ];
-        const selectedModel = IMAGE_MODELS[Math.floor(Math.random() * IMAGE_MODELS.length)];
+        // Weighted random: 70% aistudio, 30% original
+        const selectedModel = Math.random() < 0.7
+            ? 'gemini-3.1-flash-image-preview-aistudio'
+            : 'gemini-3.1-flash-image-preview';
         console.log(`[generate/image] Using model: ${selectedModel}`);
 
         const params = { prompt, modelId: selectedModel };
