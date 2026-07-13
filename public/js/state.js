@@ -146,11 +146,21 @@ export const SCIENCE_TEMPLATES = [
 ];
 
 
+function getDeviceId() {
+    // Tạo 1 lần duy nhất, lưu vĩnh viễn trong localStorage của thiết bị.
+    // Không bị xoá khi logout vì không nằm trong session key.
+    let id = localStorage.getItem('ai_studio_device_id');
+    if (!id) {
+        id = crypto.randomUUID();
+        localStorage.setItem('ai_studio_device_id', id);
+    }
+    return id;
+}
+
 export function getUsageKey(type) {
-    // Key chỉ dùng username (không dùng nickname).
-    // Nickname thay đổi mỗi lần đăng nhập → nếu dùng nickname thì quota bị reset sau mỗi lần logout.
-    // localStorage là per-origin per-browser nên quota đã được lock theo thiết bị.
-    return `ai_studio_usage_${type}_${appState.username || 'unknown'}`;
+    // Quota lock theo thiết bị: dùng device ID thay vì username.
+    // Dù đổi từ hocsinh1 → hocsinh2 trên cùng máy, quota vẫn tính chung 1 pool.
+    return `ai_studio_usage_${type}_${getDeviceId()}`;
 }
 
 export function getUsageCount(type) {
