@@ -174,6 +174,12 @@ export function incrementUsageCount(type) {
     localStorage.setItem(key, count.toString());
 }
 
+export function decrementUsageCount(type) {
+    const key = getUsageKey(type);
+    const count = Math.max(0, getUsageCount(type) - 1);
+    localStorage.setItem(key, count.toString());
+}
+
 export function checkLimits(type) {
     const role = appState.role || 'student';
     const limit = LIMITS[role][type];
@@ -182,6 +188,22 @@ export function checkLimits(type) {
         alert(`Bạn đã đạt giới hạn tạo ${type === 'images' ? 'ảnh' : 'video'} (${count}/${limit}). Hãy liên hệ giáo viên để được hỗ trợ!`);
         return false;
     }
+    return true;
+}
+
+// Pessimistic reserve: kiểm tra limit VÀ tăng counter ngay lập tức trong 1 thao tác
+// để chặn race condition khi người dùng bấm nhiều nơi đồng thời.
+// Nếu API fail → gọi decrementUsageCount để hoàn trả.
+export function checkAndReserveLimits(type) {
+    const role = appState.role || 'student';
+    const limit = LIMITS[role][type];
+    const count = getUsageCount(type);
+    if (count >= limit) {
+        alert(`Bạn đã đạt giới hạn tạo ${type === 'images' ? 'ảnh' : 'video'} (${count}/${limit}). Hãy liên hệ giáo viên để được hỗ trợ!`);
+        return false;
+    }
+    // Reserve slot ngay — tránh race condition concurrent requests
+    incrementUsageCount(type);
     return true;
 }
 

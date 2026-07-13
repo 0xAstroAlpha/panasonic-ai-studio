@@ -1,4 +1,4 @@
-import { appState, saveSession, checkLimits, incrementUsageCount } from './state.js';
+import { appState, saveSession, checkLimits, checkAndReserveLimits, incrementUsageCount, decrementUsageCount } from './state.js';
 
 const MOCK_CLASS_GALLERY = [];
 
@@ -102,7 +102,8 @@ export async function downloadFile(url, filename) {
 }
 
 export async function turnIntoVideo(index) {
-    if (!checkLimits('videos')) return;
+    // Reserve slot ngay (pessimistic) — chặn race condition
+    if (!checkAndReserveLimits('videos')) return;
 
     const itemEl = document.getElementById('gal-item-' + index);
     if (!itemEl) return;
@@ -116,15 +117,25 @@ export async function turnIntoVideo(index) {
 
     try {
         const item = appState.generatedImages[index];
-        const response = await fetch('/api/generate/video', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                prompt: 'Subtle dynamic motion, cinematic',
-                refImageUrl: item.url,
-                aspectRatio: '16:9'
-            })
-        });
+
+        // Timeout 2 phút cho video generation
+        const videoAbortCtrl = new AbortController();
+        const videoTimeoutId = setTimeout(() => videoAbortCtrl.abort('timeout'), 2 * 60 * 1000);
+        let response;
+        try {
+            response = await fetch('/api/generate/video', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    prompt: 'Subtle dynamic motion, cinematic',
+                    refImageUrl: item.url,
+                    aspectRatio: '16:9'
+                }),
+                signal: videoAbortCtrl.signal
+            });
+        } finally {
+            clearTimeout(videoTimeoutId);
+        }
         const data = await response.json();
         if (data.error) throw new Error(data.error);
 
@@ -133,12 +144,26 @@ export async function turnIntoVideo(index) {
             type: 'video',
             prompt: 'Chuyển động từ ảnh: ' + (item.prompt || 'Không có mô tả')
         });
-        incrementUsageCount('videos');
+        // Slot đã được reserve trước — không increment lại
         saveSession();
         renderGalleryView();
     } catch (e) {
         console.error('[gallery/video] Error:', e);
-        renderGalleryView();
+        // Hoàn trả slot đã reserve vì API thất bại (kể cả timeout)
+        decrementUsageCount('videos');
+        const isTimeout = e?.name === 'AbortError' || e?.message === 'timeout';
+        const itemEl = document.getElementById('gal-item-' + index);
+        if (itemEl) {
+            const overlay = itemEl.querySelector('div[style*="position:absolute"]');
+            if (overlay) overlay.remove();
+            const msg = isTimeout
+                ? '<div style="color:#ef4444;font-size:0.8rem;text-align:center;padding:8px">⏱️ Quá 2 phút — thử lại nhé!</div>'
+                : '<div style="color:#ef4444;font-size:0.8rem;text-align:center;padding:8px">⚠️ Lỗi tạo video, thử lại sau!</div>';
+            itemEl.insertAdjacentHTML('beforeend', msg);
+            setTimeout(() => renderGalleryView(), 3000);
+        } else {
+            renderGalleryView();
+        }
     }
 }
 

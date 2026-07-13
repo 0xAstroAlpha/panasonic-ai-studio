@@ -1,4 +1,4 @@
-import { appState, LIMITS, SCIENCE_TEMPLATES, AI_LITERACY_CARDS, FUNNY_WAITING_QUOTES, checkLimits, incrementUsageCount, saveSession } from './state.js';
+import { appState, LIMITS, SCIENCE_TEMPLATES, AI_LITERACY_CARDS, FUNNY_WAITING_QUOTES, checkLimits, checkAndReserveLimits, incrementUsageCount, decrementUsageCount, saveSession } from './state.js';
 import { SVG_ICONS, getOptionIcon } from './icons.js';
 import { checkPromptSafety } from './safety.js';
 import { renderComparisonView } from './comparison.js';
@@ -568,11 +568,16 @@ export function renderResultGrid() {
 
 export async function generateAction(isImg2Vid) {
     if (isImg2Vid) {
-        if (!checkLimits('videos')) return;
+        // Reserve slot ngay (pessimistic) — chặn race condition
+        if (!checkAndReserveLimits('videos')) return;
     } else {
-        if (!checkLimits('images')) return;
+        // Reserve slot ngay (pessimistic) — chặn race condition
+        if (!checkAndReserveLimits('images')) return;
         // Rate-limit: max 1 image per minute per user
-        if (!checkImageRateLimit(appState.username)) return;
+        if (!checkImageRateLimit(appState.username)) {
+            decrementUsageCount('images'); // hoàn trả nếu bị rate-limit chặn
+            return;
+        }
         // Lock immediately on click — trước khi gọi API — để chặn spam
         recordImageGeneration(appState.username);
     }
@@ -641,17 +646,26 @@ export async function generateAction(isImg2Vid) {
                 bodyPayload.refImageUrl = window.uploadedRefImage;
             }
 
-            const response = await fetch('/api/generate/video', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(bodyPayload)
-            });
+            // Timeout 2 phút cho video generation
+            const videoAbortCtrl = new AbortController();
+            const videoTimeoutId = setTimeout(() => videoAbortCtrl.abort('timeout'), 2 * 60 * 1000);
+            let response;
+            try {
+                response = await fetch('/api/generate/video', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bodyPayload),
+                    signal: videoAbortCtrl.signal
+                });
+            } finally {
+                clearTimeout(videoTimeoutId);
+            }
             const data = await response.json();
             if (data.error) throw new Error(data.error);
 
             const newVid = { url: data.url, type: 'video', prompt: promptText };
             appState.generatedImages.push(newVid);
-            incrementUsageCount('videos');
+            // Slot đã được reserve trước — không increment lại
             saveSession();
 
             // Push to Classroom Gallery as well
@@ -696,7 +710,7 @@ export async function generateAction(isImg2Vid) {
             img.onload = () => {
                 const newImg = { url: data.url, type: 'image', prompt: promptText };
                 appState.generatedImages.push(newImg);
-                incrementUsageCount('images');
+                // Slot đã được reserve trước — không increment lại
                 saveSession();
 
                 // Push to Classroom Gallery as well
@@ -715,11 +729,24 @@ export async function generateAction(isImg2Vid) {
         }
     } catch (e) {
         console.error('[generate] Error:', e);
-        resultBox.innerHTML = `<div style="text-align:center; padding: 32px 20px;">
-            <div style="font-size: 2rem; margin-bottom: 12px;">⏳</div>
-            <div style="font-weight: 600; font-size: 1rem; color: var(--text-primary); margin-bottom: 8px;">Hệ thống đang bận!</div>
-            <div style="color: var(--text-muted); font-size: 0.9rem;">Các em vui lòng thử lại sau 5 phút nhé! 🎨</div>
-        </div>`;
+        // Hoàn trả slot đã reserve vì API thất bại
+        if (isImg2Vid) {
+            decrementUsageCount('videos');
+        } else {
+            decrementUsageCount('images');
+        }
+        const isTimeout = e?.name === 'AbortError' || e?.message === 'timeout';
+        resultBox.innerHTML = isTimeout
+            ? `<div style="text-align:center; padding: 32px 20px;">
+                <div style="font-size: 2rem; margin-bottom: 12px;">⏱️</div>
+                <div style="font-weight: 600; font-size: 1rem; color: var(--text-primary); margin-bottom: 8px;">Quá thời gian chờ!</div>
+                <div style="color: var(--text-muted); font-size: 0.9rem;">Video mất hơn 2 phút để tạo — hệ thống đang tải nặng. Các em thử lại sau nhé! 🎥</div>
+              </div>`
+            : `<div style="text-align:center; padding: 32px 20px;">
+                <div style="font-size: 2rem; margin-bottom: 12px;">⏳</div>
+                <div style="font-weight: 600; font-size: 1rem; color: var(--text-primary); margin-bottom: 8px;">Hệ thống đang bận!</div>
+                <div style="color: var(--text-muted); font-size: 0.9rem;">Các em vui lòng thử lại sau 5 phút nhé! 🎨</div>
+              </div>`;
     }
 }
 
