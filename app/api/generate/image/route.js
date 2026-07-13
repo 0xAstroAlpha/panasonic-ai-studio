@@ -8,7 +8,7 @@ const ai = new VidtoryAI({
 });
 
 // Failover chain: primary models (weighted random) → fallback
-const IMAGE_FALLBACK_MODEL = 'google_image_gen_banana_2';
+const IMAGE_FALLBACK_MODEL = 'gemini-3.1-flash-image-preview-aistudio';
 
 export async function POST(request) {
     try {
@@ -54,7 +54,7 @@ export async function POST(request) {
             console.log(`[generate/image] Trying primary model: ${primaryModel}`);
             response = await ai.models.generateImage({ ...params, modelId: primaryModel });
         } catch (primaryErr) {
-            // --- Failover to google_image_gen_banana_2 ---
+            // --- Failover to gemini-3.1-flash-image-preview-aistudio ---
             console.warn(`[generate/image] Primary model "${primaryModel}" failed: ${primaryErr?.message}. Failing over to ${IMAGE_FALLBACK_MODEL}.`);
             usedModel = IMAGE_FALLBACK_MODEL;
             response = await ai.models.generateImage({ ...params, modelId: IMAGE_FALLBACK_MODEL });
