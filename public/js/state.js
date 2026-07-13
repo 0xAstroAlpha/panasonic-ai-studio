@@ -147,7 +147,10 @@ export const SCIENCE_TEMPLATES = [
 
 
 export function getUsageKey(type) {
-    return `ai_studio_usage_${type}_${appState.username || 'unknown'}_${appState.nickname || 'unknown'}`;
+    // Key chỉ dùng username (không dùng nickname).
+    // Nickname thay đổi mỗi lần đăng nhập → nếu dùng nickname thì quota bị reset sau mỗi lần logout.
+    // localStorage là per-origin per-browser nên quota đã được lock theo thiết bị.
+    return `ai_studio_usage_${type}_${appState.username || 'unknown'}`;
 }
 
 export function getUsageCount(type) {
