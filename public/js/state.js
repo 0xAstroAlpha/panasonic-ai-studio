@@ -19,13 +19,13 @@ export const CREDENTIALS = {
     // Teacher
     'giaovien': { pass: 'panasonic2026', role: 'teacher' },
     // Students
-    'hocsinh1': { pass: 'risupia123', role: 'student' },
-    'hocsinh2': { pass: 'risupia123', role: 'student' },
-    'hocsinh3': { pass: 'risupia123', role: 'student' }
+    'hocsinh1': { pass: '13072026', role: 'student' },
+    'hocsinh2': { pass: '13072026', role: 'student' },
+    'hocsinh3': { pass: '13072026', role: 'student' }
 };
 
 export const LIMITS = {
-    student: { images: 10, videos: 2 },
+    student: { images: 20, videos: 4 },
     teacher: { images: 100, videos: 20 }
 };
 
