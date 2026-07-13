@@ -37,15 +37,20 @@ export async function GET() {
             );
             
             if (!alreadyLogged && job.result?.url) {
+                // Infer type từ URL nếu job.type bị thiếu:
+                // Vidtory lưu video tại .../videos/... và ảnh tại .../images/...
+                const urlInferredType = job.result.url.includes('/videos/') ? 'video' : 'image';
+                const resolvedType = job.type || urlInferredType;
+
                 // Synthesize a history entry for jobs generated elsewhere or in previous states
                 mergedHistory.push({
                     id: job.generationHistoryId || job.id,
                     username: 'sdk-import',
                     nickname: 'Hệ thống (SDK)',
-                    studio: job.type === 'video' ? 'Làm Phim Ngắn' : 'Tạo Ảnh',
+                    studio: resolvedType === 'video' ? 'Làm Phim Ngắn' : 'Tạo Ảnh',
                     timestamp: job.completedAt || job.createdAt || new Date().toISOString(),
                     prompt: job.prompt || '(Không có câu lệnh)',
-                    type: job.type || 'image',
+                    type: resolvedType,
                     resultUrl: job.result.url,
                     refImageUrl: null
                 });
