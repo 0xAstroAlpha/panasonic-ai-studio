@@ -1,5 +1,7 @@
 import { appState } from './state.js';
 
+const PAGE_SIZE = 50;
+
 export async function fetchHistory() {
     try {
         const response = await fetch('/api/teacher/history');
@@ -73,6 +75,120 @@ export function downloadCSV(history) {
 let activeSearchQuery = '';
 let activeStudioFilter = 'all';
 let activeTypeFilter = 'all';
+let currentPage = 1;
+
+// Cache history to avoid redundant fetches during filter/page changes
+let cachedHistory = null;
+
+function getFilteredHistory(history) {
+    const search = activeSearchQuery.toLowerCase();
+    return history.filter(item => {
+        const matchSearch = item.prompt.toLowerCase().includes(search) ||
+                            item.nickname.toLowerCase().includes(search) ||
+                            item.username.toLowerCase().includes(search);
+        const matchStudio = activeStudioFilter === 'all' || item.studio === activeStudioFilter;
+        const matchType = activeTypeFilter === 'all' || item.type === activeTypeFilter;
+        return matchSearch && matchStudio && matchType;
+    });
+}
+
+function getTotalPages(totalItems) {
+    return Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+}
+
+function getPageItems(items) {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return items.slice(start, start + PAGE_SIZE);
+}
+
+function renderPagination(totalItems) {
+    const totalPages = getTotalPages(totalItems);
+    if (totalPages <= 1) return '';
+
+    const from = (currentPage - 1) * PAGE_SIZE + 1;
+    const to = Math.min(currentPage * PAGE_SIZE, totalItems);
+
+    // Build page buttons (show at most 7 slots: first, last, current ±2, ellipses)
+    const pages = [];
+    const delta = 2;
+    const range = [];
+    for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+        range.push(i);
+    }
+    if (currentPage - delta > 2) range.unshift('...');
+    if (currentPage + delta < totalPages - 1) range.push('...');
+    range.unshift(1);
+    if (totalPages > 1) range.push(totalPages);
+
+    const pageButtons = range.map(p => {
+        if (p === '...') {
+            return `<span style="padding: 0 4px; color: var(--text-muted); line-height: 36px;">…</span>`;
+        }
+        const isActive = p === currentPage;
+        return `<button
+            data-page="${p}"
+            class="teacher-page-btn"
+            style="
+                min-width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid ${isActive ? 'var(--primary-blue)' : 'var(--panel-border)'};
+                background: ${isActive ? 'var(--primary-blue)' : 'rgba(255,255,255,0.7)'};
+                color: ${isActive ? '#fff' : 'var(--text-primary)'};
+                font-weight: ${isActive ? '700' : '500'};
+                cursor: ${isActive ? 'default' : 'pointer'};
+                font-size: 0.88rem;
+                transition: all 0.15s;
+                padding: 0 10px;
+            "
+            ${isActive ? 'disabled' : ''}
+        >${p}</button>`;
+    }).join('');
+
+    const prevDisabled = currentPage === 1;
+    const nextDisabled = currentPage === totalPages;
+    const btnBase = `min-width:36px;height:36px;border-radius:8px;border:1.5px solid var(--panel-border);background:rgba(255,255,255,0.7);cursor:pointer;font-size:0.9rem;transition:all 0.15s;padding:0 10px;`;
+
+    return `
+        <div id="teacher-pagination" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-top:24px; padding:16px 20px; background:rgba(255,255,255,0.65); border-radius:14px; border:1px solid var(--panel-border);">
+            <div style="font-size:0.85rem; color:var(--text-muted); font-weight:500;">
+                Hiển thị <strong style="color:var(--text-primary)">${from}–${to}</strong> / <strong style="color:var(--text-primary)">${totalItems}</strong> kết quả
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                <button data-page="${currentPage - 1}" class="teacher-page-btn" ${prevDisabled ? 'disabled' : ''}
+                    style="${btnBase} ${prevDisabled ? 'opacity:0.4;cursor:default;' : ''}">‹ Trước</button>
+                ${pageButtons}
+                <button data-page="${currentPage + 1}" class="teacher-page-btn" ${nextDisabled ? 'disabled' : ''}
+                    style="${btnBase} ${nextDisabled ? 'opacity:0.4;cursor:default;' : ''}">Sau ›</button>
+            </div>
+        </div>
+    `;
+}
+
+function bindPaginationEvents() {
+    document.querySelectorAll('.teacher-page-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = parseInt(btn.dataset.page);
+            if (!page || btn.disabled) return;
+            currentPage = page;
+            renderFilteredList();
+            // Scroll back to top of history list smoothly
+            document.getElementById('teacher-history-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+}
+
+function renderFilteredList() {
+    if (!cachedHistory) return;
+    const filtered = getFilteredHistory(cachedHistory);
+    const totalPages = getTotalPages(filtered.length);
+    // Clamp page in case filter reduced total pages
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const pageItems = getPageItems(filtered);
+    const container = document.getElementById('teacher-history-list');
+    const paginationContainer = document.getElementById('teacher-pagination-wrapper');
+    if (container) container.innerHTML = renderHistoryItems(pageItems);
+    if (paginationContainer) paginationContainer.innerHTML = renderPagination(filtered.length);
+    bindPaginationEvents();
+}
 
 export async function renderTeacherView() {
     const playground = document.getElementById('playground-area');
@@ -84,9 +200,10 @@ export async function renderTeacherView() {
         </div>
     `;
 
-    const history = await fetchHistory();
+    cachedHistory = await fetchHistory();
+    const history = cachedHistory;
     
-    // Stats calculation
+    // Stats calculation (always on full history, not filtered)
     const totalCount = history.length;
     const imgCount = history.filter(h => h.type === 'image').length;
     const vidCount = history.filter(h => h.type === 'video').length;
@@ -94,15 +211,9 @@ export async function renderTeacherView() {
     // Filter unique studios list
     const studiosList = [...new Set(history.map(h => h.studio).filter(Boolean))];
 
-    // Filter history according to user search and filters
-    const filteredHistory = history.filter(item => {
-        const matchSearch = item.prompt.toLowerCase().includes(activeSearchQuery.toLowerCase()) ||
-                            item.nickname.toLowerCase().includes(activeSearchQuery.toLowerCase()) ||
-                            item.username.toLowerCase().includes(activeSearchQuery.toLowerCase());
-        const matchStudio = activeStudioFilter === 'all' || item.studio === activeStudioFilter;
-        const matchType = activeTypeFilter === 'all' || item.type === activeTypeFilter;
-        return matchSearch && matchStudio && matchType;
-    });
+    // Apply filters for initial render
+    const filteredHistory = getFilteredHistory(history);
+    const pageItems = getPageItems(filteredHistory);
 
     playground.innerHTML = `
         <div class="playground-header" style="border-bottom: 1px solid var(--panel-border); padding-bottom: 20px; margin-bottom: 24px;">
@@ -173,55 +284,42 @@ export async function renderTeacherView() {
         </div>
 
         <!-- Main logs area -->
-        <div id="teacher-history-list" style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px;">
-            ${renderHistoryItems(filteredHistory)}
+        <div id="teacher-history-list" style="display: flex; flex-direction: column; gap: 16px;">
+            ${renderHistoryItems(pageItems)}
+        </div>
+
+        <!-- Pagination -->
+        <div id="teacher-pagination-wrapper">
+            ${renderPagination(filteredHistory.length)}
         </div>
     `;
 
     // Event listeners
-    document.getElementById('btn-export-csv')?.addEventListener('click', () => downloadCSV(filteredHistory));
+    document.getElementById('btn-export-csv')?.addEventListener('click', () => downloadCSV(getFilteredHistory(cachedHistory)));
     document.getElementById('btn-clear-all-history')?.addEventListener('click', clearAllHistoryRecords);
 
     const searchInput = document.getElementById('teacher-search');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             activeSearchQuery = e.target.value;
-            // Debounce or filter on delay is not required for small dashboard logs
-            filterAndReRender();
+            currentPage = 1; // Reset về trang 1 khi search
+            renderFilteredList();
         });
     }
 
     document.getElementById('teacher-filter-studio')?.addEventListener('change', (e) => {
         activeStudioFilter = e.target.value;
-        filterAndReRender();
+        currentPage = 1; // Reset về trang 1 khi đổi filter
+        renderFilteredList();
     });
 
     document.getElementById('teacher-filter-type')?.addEventListener('change', (e) => {
         activeTypeFilter = e.target.value;
-        filterAndReRender();
+        currentPage = 1; // Reset về trang 1 khi đổi filter
+        renderFilteredList();
     });
-}
 
-function filterAndReRender() {
-    // Quickly update list without fetching again to ensure ultra-smooth performance
-    const search = activeSearchQuery.toLowerCase();
-    const studio = activeStudioFilter;
-    const type = activeTypeFilter;
-    
-    fetchHistory().then(history => {
-        const filtered = history.filter(item => {
-            const matchSearch = item.prompt.toLowerCase().includes(search) ||
-                                item.nickname.toLowerCase().includes(search) ||
-                                item.username.toLowerCase().includes(search);
-            const matchStudio = studio === 'all' || item.studio === studio;
-            const matchType = type === 'all' || item.type === type;
-            return matchSearch && matchStudio && matchType;
-        });
-        const container = document.getElementById('teacher-history-list');
-        if (container) {
-            container.innerHTML = renderHistoryItems(filtered);
-        }
-    });
+    bindPaginationEvents();
 }
 
 function renderHistoryItems(items) {
