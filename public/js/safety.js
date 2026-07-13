@@ -21,7 +21,7 @@ const BLACKLIST = [
     'ma túy', 'cần sa', 'heroin', 'thuốc phiện',
     
     // Tiếng Việt (Thô tục)
-    'đm', 'vcl', 'chửi', 'phóng lợn',
+    'đm', 'vcl', 'chửi', 'phóng lợn', 'ngu', 'dốt',
     
     // English (Extreme Violence / Weapons)
     'blood', 'kill', 'dead', 'death', 'gun', 'bomb', 'suicide',
