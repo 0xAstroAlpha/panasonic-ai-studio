@@ -31,8 +31,8 @@ export async function POST(request) {
             refImageUrl = media.url;
         }
 
-        // Weighted random: 95% aistudio, 5% original
-        const primaryModel = Math.random() < 0.95
+        // Weighted random: 60% aistudio, 40% original
+        const primaryModel = Math.random() < 0.6
             ? 'gemini-3.1-flash-image-preview-aistudio'
             : 'gemini-3.1-flash-image-preview';
 
