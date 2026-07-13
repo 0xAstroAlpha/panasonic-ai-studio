@@ -137,8 +137,7 @@ export async function turnIntoVideo(index) {
         saveSession();
         renderGalleryView();
     } catch (e) {
-        console.error(e);
-        alert('Lỗi tạo video: ' + e.message);
+        console.error('[gallery/video] Error:', e);
         renderGalleryView();
     }
 }

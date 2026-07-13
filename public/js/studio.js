@@ -714,8 +714,12 @@ export async function generateAction(isImg2Vid) {
             img.src = data.url;
         }
     } catch (e) {
-        console.error(e);
-        resultBox.innerHTML = '<span style="color: #ef4444;">Lỗi tạo file: ' + e.message + '</span>';
+        console.error('[generate] Error:', e);
+        resultBox.innerHTML = `<div style="text-align:center; padding: 32px 20px;">
+            <div style="font-size: 2rem; margin-bottom: 12px;">⏳</div>
+            <div style="font-weight: 600; font-size: 1rem; color: var(--text-primary); margin-bottom: 8px;">Hệ thống đang bận!</div>
+            <div style="color: var(--text-muted); font-size: 0.9rem;">Các em vui lòng thử lại sau 5 phút nhé! 🎨</div>
+        </div>`;
     }
 }
 
