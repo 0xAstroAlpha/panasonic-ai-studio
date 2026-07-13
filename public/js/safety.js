@@ -3,6 +3,13 @@ import { appState } from './state.js';
 const BLACKLIST = [
     // Tiếng Việt (Bạo lực / Vũ khí cực đoan)
     'máu', 'chết', 'giết', 'súng', 'chém giết', 'đâm chém', 'đâm người', 'đánh đập', 'bom', 'mìn', 'lựu đạn', 'đầu độc', 'tự tử', 'tự sát',
+    // Vũ khí cụ thể
+    'súng lục', 'súng trường', 'súng máy', 'súng ngắn', 'súng bắn tỉa', 'súng phóng lựu',
+    'dao găm', 'dao bấm', 'kiếm sắc', 'mã tấu', 'rìu chiến', 'dùi cui',
+    'chất nổ', 'thuốc nổ', 'bom xăng', 'bom hẹn giờ', 'bom khói', 'bom nhiệt',
+    'tên lửa', 'đạn', 'đạn thật', 'đạn pháo', 'vũ khí hóa học', 'vũ khí sinh học', 'vũ khí hạt nhân',
+    'chất độc', 'khí độc', 'thuốc độc', 'axit',
+    'tra tấn', 'hành hình', 'bắn chết', 'cứa cổ', 'treo cổ', 'bạo hành',
     
     // Tiếng Việt (Người lớn / Nhạy cảm)
     'sexy', 'nude', 'sex', 'khỏa thân', 'khiêu dâm', 'đồi trụy',
@@ -18,6 +25,12 @@ const BLACKLIST = [
     
     // English (Extreme Violence / Weapons)
     'blood', 'kill', 'dead', 'death', 'gun', 'bomb', 'suicide',
+    'pistol', 'rifle', 'shotgun', 'sniper', 'machine gun', 'handgun', 'revolver', 'ak47', 'ar15',
+    'grenade', 'landmine', 'explosive', 'dynamite', 'molotov', 'c4', 'tnt', 'missile', 'rocket launcher',
+    'knife', 'dagger', 'switchblade', 'machete', 'sword', 'blade', 'bayonet', 'brass knuckles',
+    'chemical weapon', 'biological weapon', 'nuclear weapon', 'nerve agent', 'poison gas',
+    'torture', 'execution', 'decapitate', 'stab', 'shoot', 'massacre', 'assassinate', 'murder',
+    'ammo', 'ammunition', 'bullet', 'gunshot', 'warfare', 'airstrike', 'artillery',
     
     // English (Adult / Sensitive)
     'porn', 'erotic', 'hentai', 'breast', 'naked',
