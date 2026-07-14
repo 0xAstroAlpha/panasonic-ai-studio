@@ -42,7 +42,7 @@ const BLACKLIST = [
     'cocaine', 'heroin', 'ecstasy',
     
     // English (Profanity)
-    'swear', 'curse', 'insult'
+    'swear', 'curse', 'insult', 'meme', 'shit'
 ];
 
 const CHILD_SAFETY_BYPASS_KEYWORDS = [
