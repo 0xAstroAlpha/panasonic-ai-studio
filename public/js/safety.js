@@ -146,7 +146,7 @@ export function checkPromptSafety(promptText, currentModule, isImg2Vid) {
         }
         return {
             ok: false,
-            message: `Ý tưởng này chưa phù hợp với lớp học dành cho trẻ em. Hãy tránh nội dung người lớn, trang phục nhạy cảm hoặc yêu cầu vượt qua bộ lọc an toàn nhé. Gợi ý: '${suggestion}'`
+            message: `⚠️ Cảnh báo: Từ khóa bạn sử dụng vi phạm nghiêm trọng quy tắc an toàn. Các hành vi cố tình tạo nội dung nhạy cảm, bạo lực hoặc không phù hợp sẽ bị hệ thống lưu lại lịch sử và có thể gửi thông báo cho phụ huynh/giáo viên. Hãy thay đổi ý tưởng! Gợi ý: '${suggestion}'`
         };
     }
 
