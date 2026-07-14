@@ -251,7 +251,6 @@ export function renderGalleryView() {
                     `;
                 } else {
                     actionsHtml = `
-                        <button class="btn-gen-video" onclick="event.stopPropagation(); window.turnIntoVideo(${index})">🎬 Tạo video</button>
                         <div>
                             <button class="btn-icon" onclick="event.stopPropagation(); window.downloadFile('${item.url}', 'image_${index}.jpg')" title="Tải xuống">📥</button>
                             <button class="btn-icon" onclick="event.stopPropagation(); window.deleteItem(${index})" title="Xóa">🗑️</button>
