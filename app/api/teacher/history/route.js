@@ -7,7 +7,7 @@ const ai = new VidtoryAI({
 });
 
 // ─── Server-side stats cache (5 min TTL) ────────────────────────────────────
-// Avoids re-paginating all 800+ jobs on every page change.
+// Avoids re-paginating all usages on every page change.
 let _statsCache = null;
 let _statsCacheExpiry = 0;
 const STATS_TTL_MS = 5 * 60 * 1000;
@@ -18,6 +18,7 @@ async function fetchAllJobStats() {
     }
 
     const counts = { total: 0, videos: 0, images: 0 };
+    const allUsages = []; // Keep track of all successful usages for pagination
     const BATCH = 100; // max limit for usages API usually
     let offset = 0;
     
@@ -36,17 +37,17 @@ async function fetchAllJobStats() {
 
             const items = data.data.items;
             for (const item of items) {
-                // Chỉ thống kê các job tạo thành công
+                // Chỉ thống kê và list các job tạo thành công
                 if (item.status === 'success') {
                     counts.total++;
                     if (item.type === 'video') counts.videos++;
                     else if (item.type === 'image') counts.images++;
+                    allUsages.push(item);
                 }
             }
 
             offset += items.length;
             
-            // Nếu số lượng trả về ít hơn BATCH, nghĩa là đã đến trang cuối cùng
             if (items.length < BATCH) {
                 break;
             }
@@ -56,9 +57,10 @@ async function fetchAllJobStats() {
         }
     }
 
-    _statsCache = counts;
+    const cacheData = { counts, usages: allUsages };
+    _statsCache = cacheData;
     _statsCacheExpiry = Date.now() + STATS_TTL_MS;
-    return counts;
+    return cacheData;
 }
 
 // ─── Display page size ───────────────────────────────────────────────────────
@@ -72,62 +74,91 @@ export async function GET(request) {
 
         const localHistory = getHistory();
 
-        // Run stats and display fetch concurrently.
-        // Stats uses the module-level cache so it's only slow on the very first call.
-        const [sdkStats, displayRes] = await Promise.all([
-            fetchAllJobStats(),
-            ai.jobs.list({ status: 'COMPLETED', limit: DISPLAY_PAGE_SIZE, offset: sdkOffset })
-                .catch(e => { console.error('Display fetch error:', e); return { jobs: [], total: 0 }; }),
-        ]);
+        // 1. Fetch usages from cache or network
+        const statsData = await fetchAllJobStats();
+        const sdkStats = statsData.counts;
+        const allUsages = statsData.usages || [];
 
-        const displayJobs = displayRes.jobs || [];
-        const sdkTotal = displayRes.total || 0;
+        // 2. Paginate usages array directly
+        const pageUsages = allUsages.slice(sdkOffset, sdkOffset + DISPLAY_PAGE_SIZE);
 
-        // ─── Build display history for this page ──────────────────────────────
-        // On page 1: prepend any localHistory entries not already in SDK results.
-        // On page 2+: pure SDK jobs (no localHistory duplication).
         const mergedHistory = [];
 
+        // On page 1: prepend any localHistory entries not present in allUsages
         if (page === 1) {
             localHistory.forEach(h => {
-                const coveredBySdk = displayJobs.some(j =>
-                    j.result?.url === h.resultUrl || j.generationHistoryId === h.id || j.id === h.id
-                );
+                const coveredBySdk = allUsages.some(u => u.jobId === h.id || u.id === h.id);
                 if (!coveredBySdk) mergedHistory.push(h);
             });
         }
 
-        displayJobs.forEach(job => {
-            if (!job.result?.url) return;
-            const url = job.result.url;
-            const urlInferredType = url.includes('/videos/') ? 'video' : 'image';
+        // 3. Resolve details for the page's usages
+        const resolvedJobs = await Promise.all(pageUsages.map(async usage => {
+            // Check local history first (saves API call)
+            const localMatch = localHistory.find(h => h.id === usage.jobId || h.id === usage.id);
+            if (localMatch && localMatch.resultUrl) {
+                return {
+                    id: usage.jobId,
+                    type: usage.type,
+                    url: localMatch.resultUrl,
+                    prompt: localMatch.prompt,
+                    studio: localMatch.studio,
+                    createdAt: usage.createdAt,
+                    missing: false
+                };
+            }
+
+            // Fetch from Vidtory SDK
+            try {
+                const res = await ai.jobs.getStatus(usage.jobId);
+                const jobData = res.data || res;
+                return {
+                    id: usage.jobId,
+                    type: jobData.type || usage.type,
+                    url: jobData.result?.url || '',
+                    prompt: jobData.prompt,
+                    studio: null, // Default
+                    createdAt: jobData.completedAt || jobData.createdAt || usage.createdAt,
+                    missing: !jobData.result?.url
+                };
+            } catch (e) {
+                return {
+                    id: usage.jobId,
+                    type: usage.type,
+                    url: '',
+                    prompt: '(Tác phẩm không tìm thấy hoặc đã bị xóa)',
+                    studio: null,
+                    createdAt: usage.createdAt,
+                    missing: true
+                };
+            }
+        }));
+
+        resolvedJobs.forEach(job => {
+            if (!job) return;
+            const urlInferredType = job.url?.includes('/videos/') ? 'video' : 'image';
             const resolvedType = job.type || urlInferredType;
 
             mergedHistory.push({
-                id: job.generationHistoryId || job.id,
+                id: job.id,
                 username: 'sdk-import',
                 nickname: 'Hệ thống (SDK)',
-                studio: resolvedType === 'video' ? 'Làm Phim Ngắn' : 'Tạo Ảnh',
-                timestamp: job.completedAt || job.createdAt || new Date().toISOString(),
+                studio: job.studio || (resolvedType === 'video' ? 'Làm Phim Ngắn' : 'Tạo Ảnh'),
+                timestamp: job.createdAt || new Date().toISOString(),
                 prompt: job.prompt || '(Không có câu lệnh)',
                 type: resolvedType,
-                resultUrl: url,
+                resultUrl: job.url,
                 refImageUrl: null,
             });
         });
 
+        // Ensure chronological order for merged history
         mergedHistory.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
         // ─── Stats: SDK full counts + local-only entries ──────────────────────
-        // local entries not covered by the SDK (edge-case; usually 0)
-        const allSdkUrls = new Set(); // we don't have all SDK URLs here, approximate
         const localCreative = localHistory.filter(h => !h.isRefOnly);
-        // Use sdkTotal to detect if local entries are already counted in SDK
-        // Conservative: add local entries that don't appear in current display page
         const localOnly = localCreative.filter(h =>
-            !displayJobs.some(j =>
-                j.result?.url === h.resultUrl || j.generationHistoryId === h.id || j.id === h.id
-            )
+            !allUsages.some(u => u.jobId === h.id || u.id === h.id)
         );
         const localOnlyVideos = localOnly.filter(h => h.type === 'video').length;
         const localOnlyImages = localOnly.filter(h => h.type === 'image').length;
@@ -136,13 +167,9 @@ export async function GET(request) {
             total: sdkStats.total + localOnlyVideos + localOnlyImages,
             videos: sdkStats.videos + localOnlyVideos,
             images: sdkStats.images + localOnlyImages,
-            // refUploads: not fetched per-page (would require ai.media.list() on every call).
-            // Cached from previous full load or shown as null until available.
-            refUploads: _statsCache?.refUploads ?? null,
+            refUploads: _statsCache?.counts?.refUploads ?? null,
         };
 
-        // ─── Pagination metadata ──────────────────────────────────────────────
-        // Total pages based on full SDK job count (stats.total covers all creative items)
         const totalItems = stats.total;
         const totalPages = Math.max(1, Math.ceil(totalItems / DISPLAY_PAGE_SIZE));
 
@@ -169,16 +196,12 @@ export async function DELETE(request) {
 
         if (id) {
             deleteHistoryItem(id);
-            // Also try to delete from Vidtory SDK media storage if it is a media file ID
             try {
                 await ai.media.delete(id);
-            } catch (err) {
-                // Ignore if it's not a media ID or delete is not supported
-            }
+            } catch (err) {}
             return NextResponse.json({ success: true, message: `Record ${id} deleted` });
         } else {
             clearAllHistory();
-            // Invalidate stats cache so next load reflects cleared history
             _statsCache = null;
             _statsCacheExpiry = 0;
             return NextResponse.json({ success: true, message: 'All history cleared' });
