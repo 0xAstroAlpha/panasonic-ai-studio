@@ -12,7 +12,7 @@ const BLACKLIST = [
     'tra tấn', 'hành hình', 'bắn chết', 'cứa cổ', 'treo cổ', 'bạo hành',
     
     // Tiếng Việt (Người lớn / Nhạy cảm)
-    'sexy', 'nude', 'sex', 'khỏa thân', 'khiêu dâm', 'đồi trụy',
+    'sexy', 'nude', 'sex', 'khỏa thân', 'khiêu dâm', 'đồi trụy', 'cởi quần áo', 'không mặc quần áo',
     'bikini', 'đồ lót', 'noi y', 'nội y', 'áo lót', 'quần lót', 'đồ ngủ gợi cảm',
     'ảnh người lớn', 'hình người lớn', 'phim người lớn', 'nội dung người lớn',
     'người mẫu gợi cảm', 'hot girl', 'gái sexy', 'trai sexy', 'gợi dục', 'gợi cảm quá mức',
