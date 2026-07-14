@@ -519,7 +519,7 @@ style.innerHTML = `
 `;
 document.head.appendChild(style);
 
-window.showLightbox = function(url, type) {
+window.showLightbox = function(url, type, prompt = '') {
     let lightbox = document.getElementById('global-lightbox');
     if (!lightbox) {
         lightbox = document.createElement('div');
@@ -527,22 +527,27 @@ window.showLightbox = function(url, type) {
         lightbox.className = 'lightbox-overlay';
         lightbox.innerHTML = `
             <div class="lightbox-close" onclick="window.closeLightbox()">&times;</div>
-            <div class="lightbox-content"></div>
+            <div class="lightbox-content" style="display:flex; flex-direction:column; align-items:center;"></div>
         `;
         document.body.appendChild(lightbox);
 
         lightbox.addEventListener('click', (e) => {
-            if (e.target === lightbox) {
+            if (e.target === lightbox || e.target.classList.contains('lightbox-content')) {
                 window.closeLightbox();
             }
         });
     }
 
     const content = lightbox.querySelector('.lightbox-content');
+    let promptHtml = '';
+    if (prompt) {
+        promptHtml = `<div style="color: white; margin-top: 16px; font-size: 1rem; max-width: 80%; text-align: center; background: rgba(0,0,0,0.7); padding: 12px 20px; border-radius: 8px; line-height: 1.5; font-weight: 500;">${prompt}</div>`;
+    }
+
     if (type === 'video') {
-        content.innerHTML = `<video src="${url}" controls autoplay loop class="lightbox-media"></video>`;
+        content.innerHTML = `<video src="${url}" controls autoplay loop class="lightbox-media"></video>${promptHtml}`;
     } else {
-        content.innerHTML = `<img src="${url}" class="lightbox-media" alt="Lightbox Media">`;
+        content.innerHTML = `<img src="${url}" class="lightbox-media" alt="Lightbox Media">${promptHtml}`;
     }
 
     lightbox.classList.add('show');

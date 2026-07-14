@@ -53,7 +53,7 @@ export function renderComparisonView(newImageUrl, newPrompt) {
                     <span>⬅️ Ảnh trước khi đổi</span>
                 </h4>
                 <div style="flex: 1; border-radius: 16px; overflow: hidden; border: 1px solid var(--panel-border); background: rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: center; position: relative; min-height: 240px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);">
-                    <img src="${base.url}" style="width: 100%; height: 100%; object-fit: contain; cursor: pointer;" onclick="window.showLightbox('${base.url}', 'image')">
+                    <img src="${base.url}" style="width: 100%; height: 100%; object-fit: contain; cursor: pointer;" onclick="window.showLightbox('${base.url}', 'image', '${(base.prompt || '').replace(/'/g, "\\'")}')">
                 </div>
                 <div class="live-prompt-box" style="font-size: 0.85rem; min-height: unset; padding: 12px; background: rgba(255,255,255,0.7); line-height: 1.5; border-radius: 12px;">
                     ${base.prompt}
@@ -64,7 +64,7 @@ export function renderComparisonView(newImageUrl, newPrompt) {
                     <span>➡️ Ảnh sau khi đổi (Mới)</span>
                 </h4>
                 <div style="flex: 1; border-radius: 16px; overflow: hidden; border: 2.5px solid var(--primary-lime); background: rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: center; position: relative; min-height: 240px; box-shadow: 0 8px 24px rgba(183, 233, 49, 0.15);">
-                    <img src="${newImageUrl}" style="width: 100%; height: 100%; object-fit: contain; cursor: pointer;" onclick="window.showLightbox('${newImageUrl}', 'image')">
+                    <img src="${newImageUrl}" style="width: 100%; height: 100%; object-fit: contain; cursor: pointer;" onclick="window.showLightbox('${newImageUrl}', 'image', '${(newPrompt || '').replace(/'/g, "\\'")}')">
                 </div>
                 <div class="live-prompt-box" style="font-size: 0.85rem; min-height: unset; padding: 12px; background: rgba(255,255,255,0.9); line-height: 1.5; border-radius: 12px; border-color: var(--primary-lime);">
                     ${diffHtml}

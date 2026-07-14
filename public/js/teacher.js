@@ -372,7 +372,7 @@ function renderHistoryItems(items) {
         if (item.isRefOnly) { badgeColor = '#FF9F1C'; badgeText = '📁 Tham chiếu'; }
 
         const refImgHtml = item.refImageUrl ? `
-            <div style="flex-shrink:0;cursor:pointer" onclick="window.showLightbox('${item.refImageUrl}','image')">
+            <div style="flex-shrink:0;cursor:pointer" onclick="window.showLightbox('${item.refImageUrl}','image', 'Ảnh tham chiếu')">
                 <div style="font-size:0.75rem;color:var(--text-muted);font-weight:600;margin-bottom:4px">Ảnh tham khảo:</div>
                 <img src="${item.refImageUrl}" style="width:70px;height:70px;object-fit:cover;border-radius:8px;border:1px solid var(--panel-border);" alt="Reference">
             </div>
@@ -385,7 +385,7 @@ function renderHistoryItems(items) {
 
         return `
             <div class="glass-panel" style="padding:16px;border-radius:16px;border:1px solid var(--panel-border);background:rgba(255,255,255,0.7);backdrop-filter:blur(16px);display:flex;gap:20px;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-                <div style="position:relative;width:140px;height:140px;flex-shrink:0;background:rgba(0,0,0,0.03);border-radius:12px;overflow:hidden;border:1px solid rgba(0,0,0,0.06);cursor:pointer;" onclick="window.showLightbox('${item.resultUrl}','${item.type}')">
+                <div style="position:relative;width:140px;height:140px;flex-shrink:0;background:rgba(0,0,0,0.03);border-radius:12px;overflow:hidden;border:1px solid rgba(0,0,0,0.06);cursor:pointer;" onclick="window.showLightbox('${item.resultUrl}','${item.type}', '${(item.prompt || '').replace(/'/g, "\\'")}')">
                     ${thumbHtml}
                 </div>
                 <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between;min-width:0;">

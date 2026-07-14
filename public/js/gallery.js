@@ -239,7 +239,7 @@ export function renderGalleryView() {
         itemsHtml = appState.generatedImages.map((item, index) => {
             const isSelected = appState.gallerySelectedIndices.includes(index);
             const selClass = isSelected ? 'selected' : '';
-            const clickHandler = isMultiSelect ? `onclick="window.toggleItemSelect(${index})"` : `onclick="window.showLightbox('${item.url}', '${item.type}')"`;
+            const clickHandler = isMultiSelect ? `onclick="window.toggleItemSelect(${index})"` : `onclick="window.showLightbox('${item.url}', '${item.type}', '${(item.prompt || '').replace(/'/g, "\\'")}')"`;
 
             let actionsHtml = '';
             if (!isMultiSelect) {
@@ -283,7 +283,7 @@ export function renderGalleryView() {
         // Classroom exhibition
         const classItems = getClassGallery();
         itemsHtml = classItems.map((item, index) => {
-            const clickHandler = `onclick="window.showLightbox('${item.url}', '${item.type}')"`;
+            const clickHandler = `onclick="window.showLightbox('${item.url}', '${item.type}', '${(item.prompt || '').replace(/'/g, "\\'")}')"`;
             const contentHtml = item.type === 'video' ? `<video src="${item.url}" autoplay loop muted></video>` : `<img src="${item.url}" alt="Art">`;
 
             // Moderator controls for teacher, Report for student

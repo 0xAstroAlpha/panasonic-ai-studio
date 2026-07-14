@@ -546,9 +546,9 @@ export function renderResultGrid() {
 
     const imagesHtml = [...appState.generatedImages].reverse().map((img, idx) => {
         if (img.type === 'video') {
-            return `<div class="result-item" onclick="window.showLightbox('${img.url}', 'video')" style="cursor: pointer;"><video src="${img.url}" autoplay loop muted></video></div>`;
+            return `<div class="result-item" onclick="window.showLightbox('${img.url}', 'video', '${(img.prompt || '').replace(/'/g, "\\'")}')" style="cursor: pointer;"><video src="${img.url}" autoplay loop muted></video></div>`;
         }
-        return `<div class="result-item" onclick="window.showLightbox('${img.url}', 'image')" style="cursor: pointer;"><img src="${img.url}" alt="AI Gen"></div>`;
+        return `<div class="result-item" onclick="window.showLightbox('${img.url}', 'image', '${(img.prompt || '').replace(/'/g, "\\'")}')" style="cursor: pointer;"><img src="${img.url}" alt="AI Gen"></div>`;
     }).join('');
 
     // Add "Đổi 1 chi tiết & so sánh" button at the top of results if we have at least one image
