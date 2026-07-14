@@ -116,7 +116,7 @@ export async function GET(request) {
                     id: usage.jobId,
                     type: jobData.type || usage.type,
                     url: jobData.result?.url || '',
-                    prompt: jobData.prompt,
+                    prompt: jobData.prompt || jobData.requestBody?.prompt || '',
                     studio: null, // Default
                     createdAt: jobData.completedAt || jobData.createdAt || usage.createdAt,
                     missing: !jobData.result?.url
